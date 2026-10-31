@@ -3,9 +3,9 @@
 > Source of truth. After every applied change, update **Current status** and **Status log** below.
 
 ## Current status
-- **Done:** Housekeeping, 0.1-0.3, 1.1-1.9, 1.10-1.12, 2.1, 2.2, 2.3
+- **Done:** Housekeeping, 0.1-0.3, 1.1-1.11, 1.12 (skeleton only), 2.1-2.4, 3.1 SEO + analytics, 3.1b motion
 - **In progress:** none
-- **Next:** 2.4 Work page + case study template + case studies
+- **Next:** 3.2 Performance check on phone and desktop. Still open: 1.12 backend (database + email), confirm prices, real screenshots and live links, real team photo
 
 ## Brand (current code)
 - Theme: one dark theme only.
@@ -58,18 +58,19 @@ Do NOT create `src/pages/`. Next.js treats it as the old Pages Router and it wil
 - [x] 1.7 Home: `FeaturedProjects.js` (+ `data/projects.js`)
 - [x] 1.8 Home: `Process.js`
 - [x] 1.9 Home: `FinalCTA.js`
-- [ ] 1.10 Contact page: `InquiryForm.js` (UI only)
-- [ ] 1.11 Contact page: `BookingEmbed.js`
-- [ ] 1.12 `api/inquiry/route.js`: save to DB + email alert to team
+- [x] 1.10 Contact page: `InquiryForm.js` (UI only)
+- [x] 1.11 Contact page: `BookingEmbed.js`
+- [ ] 1.12 `api/inquiry/route.js`: save to DB + email alert to team (skeleton done: validation, honeypot, rate limit. DB insert + email still TODO, the form shows success but saves nothing yet)
 
 ### Phase 2 — Week 2 pages
-- [ ] 2.1 Services overview + 3 service pages
-- [ ] 2.2 Pricing page
-- [ ] 2.3 About page
-- [ ] 2.4 Work page + case study template + 2 case studies
+- [x] 2.1 Services overview + 3 service pages
+- [x] 2.2 Pricing page
+- [x] 2.3 About page
+- [x] 2.4 Work page + case study template + 2 case studies
 
 ### Phase 3 — Week 3 launch
-- [ ] 3.1 SEO (titles, descriptions, sitemap) + analytics
+- [x] 3.1 SEO (titles, descriptions, sitemap) + analytics
+- [x] 3.1b Motion / animation pass (Reji: `ui/Reveal.js` + motion-system.html)
 - [ ] 3.2 Performance check, test on phone and desktop
 - [ ] 3.3 Deploy to Vercel + domain
 
@@ -100,3 +101,5 @@ Do NOT create `src/pages/`. Next.js treats it as the old Pages Router and it wil
 - 2026-10-31: Done 2.1 Services overview and 3 service pages: `/services`, `/services/websites`, `/services/web-apps`, `/services/custom-software`. Home ServiceCards now link to specific pages. Content in `src/data/serviceDetails.js`.
 - 2026-10-31: Done 2.2 Pricing page: `/pricing` with suggested prices (Starter $175 final, Business from $450 suggested, custom quotes, Care Plan $40-120 suggested), signal rail on recommended tier, and FAQ. Prices live in `src/data/pricing.js`.
 - 2026-10-31: Done 2.3 About page: `/about` with story, values, team (published only; placeholder hidden), and FAQ. Team data in `src/data/team.js`.
+- 2026-10-31: INTEGRATION (branch `integrate`, base = Reji's `rj-main`; Chris chose Reji's version). Kept Reji's graphite + signal theme, motion, API skeleton and content pages. Ported from Chris's `chris-work` branch: Work pages (`/work`, `/work/[slug]` built from Reji's honest `data/projectDetails.js`: Quest2Go, RJ BoardHouse; sample case studies were NOT ported), `sections/work/WorkGrid.js` and `CaseStudy.js`, Home FeaturedProjects now links to the case study. SEO: `data/site.js` (url from `NEXT_PUBLIC_SITE_URL`, fallback https://bindev.vercel.app), `layout.js` (metadataBase, title template `%s | BinDev`, Open Graph, Twitter, Organization JSON-LD, `<Analytics />`), `app/sitemap.js` (from services + projectDetails), `app/robots.js`, `app/opengraph-image.js` (restyled to graphite + lime), favicon. `@vercel/analytics` added. Fixed the eslint error in `ui/Reveal.js` (reduced motion is now CSS-only with `motion-reduce:` classes).
+- 2026-10-31: TODO for Chris: enable Analytics in the Vercel dashboard (nothing is recorded until then); confirm the "suggested" prices in `data/pricing.js` (Business from $450, Care Plan $40-120) and the budget ranges in `data/inquiry.js`; add real screenshots and live links in `data/projects.js` and `data/projectDetails.js`; real team photo; do 1.12 (database + email) before promoting the Contact page to customers.

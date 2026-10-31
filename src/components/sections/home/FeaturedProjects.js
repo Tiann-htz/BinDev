@@ -2,7 +2,13 @@ import Image from "next/image";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
+import Link from "next/link";
 import { projects } from "@/data/projects";
+import { projectDetails } from "@/data/projectDetails";
+
+// Only link to a case study page when one exists in data/projectDetails.js
+const hasCaseStudy = (slug) =>
+  projectDetails.some((detail) => detail.slug === slug);
 
 const featuredProjects = projects.filter(
   (project) => project.featured !== false
@@ -82,6 +88,15 @@ export default function FeaturedProjects() {
                     </li>
                   ))}
                 </ul>
+
+                {hasCaseStudy(project.slug) && (
+                  <Link
+                    href={`/work/${project.slug}`}
+                    className="mt-6 text-sm font-medium text-signal hover:underline"
+                  >
+                    Read the case study &rarr;
+                  </Link>
+                )}
 
                 {project.url && (
                   <a
