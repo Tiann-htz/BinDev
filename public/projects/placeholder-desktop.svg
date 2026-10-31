@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-label="Screenshot placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1b36"/>
+      <stop offset="1" stop-color="#080e1c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <!-- browser window -->
+  <rect x="140" y="110" width="1320" height="780" rx="24" fill="#0b1426" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3"/>
+  <path d="M140 134a24 24 0 0 1 24-24h1272a24 24 0 0 1 24 24v76H140z" fill="#ffffff" fill-opacity="0.06"/>
+  <circle cx="190" cy="160" r="12" fill="#ffffff" fill-opacity="0.25"/>
+  <circle cx="230" cy="160" r="12" fill="#ffffff" fill-opacity="0.25"/>
+  <circle cx="270" cy="160" r="12" fill="#ffffff" fill-opacity="0.25"/>
+  <rect x="340" y="140" width="720" height="40" rx="20" fill="#ffffff" fill-opacity="0.08"/>
+  <!-- sidebar -->
+  <rect x="180" y="250" width="220" height="600" rx="14" fill="#ffffff" fill-opacity="0.05"/>
+  <rect x="204" y="278" width="120" height="16" rx="8" fill="#03defe" fill-opacity="0.8"/>
+  <rect x="204" y="324" width="160" height="12" rx="6" fill="#ffffff" fill-opacity="0.2"/>
+  <rect x="204" y="360" width="140" height="12" rx="6" fill="#ffffff" fill-opacity="0.2"/>
+  <rect x="204" y="396" width="150" height="12" rx="6" fill="#ffffff" fill-opacity="0.2"/>
+  <!-- content -->
+  <rect x="440" y="250" width="420" height="30" rx="10" fill="#ffffff" fill-opacity="0.22"/>
+  <rect x="440" y="300" width="620" height="14" rx="7" fill="#ffffff" fill-opacity="0.12"/>
+  <rect x="440" y="330" width="540" height="14" rx="7" fill="#ffffff" fill-opacity="0.12"/>
+  <rect x="440" y="390" width="280" height="170" rx="16" fill="#03defe" fill-opacity="0.14" stroke="#03defe" stroke-opacity="0.5" stroke-width="2"/>
+  <rect x="750" y="390" width="280" height="170" rx="16" fill="#ffffff" fill-opacity="0.06"/>
+  <rect x="1060" y="390" width="360" height="170" rx="16" fill="#ffffff" fill-opacity="0.06"/>
+  <rect x="440" y="590" width="980" height="240" rx="16" fill="#ffffff" fill-opacity="0.05"/>
+  <rect x="470" y="620" width="260" height="14" rx="7" fill="#ffffff" fill-opacity="0.2"/>
+  <path d="M470 790l140-90 120 50 150-110 140 70 150-90 140 40" fill="none" stroke="#03defe" stroke-opacity="0.8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- label -->
+  <rect x="560" y="440" width="480" height="120" rx="20" fill="#080e1c" fill-opacity="0.85"/>
+  <text x="800" y="500" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#ffffff">Screenshot placeholder</text>
+  <text x="800" y="540" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#ffffff" fill-opacity="0.6">Replace with a real screenshot</text>
+</svg>

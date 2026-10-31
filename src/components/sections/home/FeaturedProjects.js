@@ -1,30 +1,7 @@
-import Image from "next/image";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import ProjectCard from "@/components/ui/ProjectCard";
 import { projects } from "@/data/projects";
-
-function ProjectImage({ project }) {
-  if (project.image) {
-    return (
-      <Image
-        src={project.image}
-        alt={`${project.title} screenshot`}
-        width={800}
-        height={500}
-        className="h-full w-full object-cover object-top"
-      />
-    );
-  }
-
-  // Placeholder until a real screenshot is added in data/projects.js
-  return (
-    <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(70%_70%_at_50%_0%,rgba(3,222,254,0.2),transparent)]">
-      <span className="text-sm font-medium text-white/50">
-        Screenshot coming soon
-      </span>
-    </div>
-  );
-}
 
 export default function FeaturedProjects() {
   return (
@@ -46,46 +23,7 @@ export default function FeaturedProjects() {
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <article
-              key={project.slug}
-              className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5"
-            >
-              <div className="aspect-[16/10] overflow-hidden border-b border-white/10 bg-white/5">
-                <ProjectImage project={project} />
-              </div>
-
-              <div className="flex flex-1 flex-col p-6">
-                <p className="text-xs font-medium uppercase tracking-wide text-brand">
-                  {project.category}
-                </p>
-                <h3 className="mt-2 text-xl font-semibold">{project.title}</h3>
-                <p className="mt-3 flex-1 text-white/75">
-                  {project.description}
-                </p>
-
-                <ul className="mt-5 flex flex-wrap gap-2">
-                  {project.stack.map((tech) => (
-                    <li
-                      key={tech}
-                      className="rounded-md bg-white/10 px-2.5 py-1 text-xs font-medium text-white/80"
-                    >
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
-
-                {project.url && (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 text-sm font-medium text-brand hover:underline"
-                  >
-                    Visit site &rarr;
-                  </a>
-                )}
-              </div>
-            </article>
+            <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
       </Container>
