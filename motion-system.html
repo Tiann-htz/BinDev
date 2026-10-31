@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BinDev Motion System</title>
+  <style>
+    :root { --bg:#0B0F14; --fg:#EAEFF7; --muted:#9BA6B5; --signal:#B8FF3D; --surface:#121821; --hair:#1F2530; color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--fg); font-family:"Plus Jakarta Sans",system-ui,sans-serif; line-height:1.6; }
+    .wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
+    h1 { font-family:"Bricolage Grotesque",system-ui,sans-serif; font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.05; margin:40px 0 16px; }
+    h2 { font-family:"Bricolage Grotesque",system-ui,sans-serif; font-size:1.6rem; margin:40px 0 12px; }
+    h3 { font-family:"JetBrains Mono",monospace; font-size:12px; text-transform:uppercase; letter-spacing:.2em; color:var(--muted); margin:20px 0 6px; }
+    p, li { color:var(--fg); max-width:72ch; }
+    .muted { color:var(--muted); }
+    table { width:100%; border-collapse:collapse; margin:12px 0; }
+    th,td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--hair); font-size:14px; vertical-align:top; }
+    th { color:var(--muted); font-weight:600; }
+    code { font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface); padding:2px 6px; border-radius:4px; }
+    .token { font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--signal); }
+    .card { background:var(--surface); border:1px solid var(--hair); border-radius:16px; padding:20px; margin:16px 0; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Cinematic Motion System — BinDev</h1>
+  <p class="muted">One motion language for the whole site. Smooth, purposeful, performance-safe. Driven by transform and opacity only. Every animation justifiable in one sentence (hierarchy, storytelling, feedback, state).</p>
+
+  <h2>1. Core timing tokens</h2>
+  <table>
+    <tr><th>Token</th><th>Value</th><th>Use</th></tr>
+    <tr><td>--ease-primary</td><td><code>cubic-bezier(0.32, 0.72, 0, 1)</code></td><td>All UI state transitions</td></tr>
+    <tr><td>--ease-out-soft</td><td><code>cubic-bezier(0.16, 1, 0.3, 1)</code></td><td>Scroll reveals, modal open</td></tr>
+    <tr><td>--dur-micro</td><td>120ms</td><td>Hover tint, focus ring</td></tr>
+    <tr><td>--dur-ui</td><td>280ms</td><td>Button press, menu toggle</td></tr>
+    <tr><td>--dur-section</td><td>700-800ms</td><td>Section entry, image transitions</td></tr>
+    <tr><td>--dur-scene</td><td>1000-1200ms</td><td>Pinned scene change, page transition</td></tr>
+  </table>
+
+  <h2>2. Loading sequence</h2>
+  <ul>
+    <li>0ms: html opacity 0, body background shows immediately (no FOUC flash). Preload font weights WOFF2.</li>
+    <li>0-320ms: mark (SVG signal dot) scales 0.6 to 1 with ease-out-soft; eyebrow fades in.</li>
+    <li>320-900ms: hero headline enters word-by-word with stagger 48ms, y 24 to 0, opacity 0 to 1, blur 8px to 0.</li>
+    <li>900-1100ms: subtext and CTA fade-up; CTA trailing icon rotates in.</li>
+    <li>1100ms+: grid + glow fade from 0 opacity; page becomes scrollable; IntersectionObservers armed.</li>
+    <li>Never block interaction past 1.2s. Loading animation must be optional delay, not gate.</li>
+  </ul>
+
+  <h2>3. Text reveals</h2>
+  <ul>
+    <li>Hero H1: word-level opacity/transform, max 2 lines, tracking tightens 0.02em during reveal.</li>
+    <li>Body paragraphs: line-level fade with 60ms stagger per line, only once per session via sessionStorage flag.</li>
+    <li>Counters (metrics): number interpolation over 900ms on first view, tabular nums locked.</li>
+    <li>No scramble/decode effects on service copy (too noisy for B2B).</li>
+  </ul>
+
+  <h2>4. Image transitions</h2>
+  <ul>
+    <li>Lazy images start scale 0.96 + opacity 0; resolve scale 1 + opacity 1 over 700ms when 15% visible.</li>
+    <li>Duotone case study thumbs cross-fade to full color on hover over 400ms, ease-primary.</li>
+    <li>Aspect ratio reserved (aspect-[16/10]) to prevent CLS.</li>
+    <li>No parallax on images larger than 1MB on mobile.</li>
+  </ul>
+
+  <h2>5. Parallax and depth</h2>
+  <ul>
+    <li>Hero background grid: translate Y at 0.12x scroll; glow at 0.2x. GPU transform only.</li>
+    <li>Section hairlines: opacity from 0.4 to 1 as they approach viewport center.</li>
+    <li>Spotlight card borders: radial mask follows cursor with 120px radius, lerp 0.14 per frame.</li>
+    <li>No 3D transforms on scroll paths that include text (readability).</li>
+  </ul>
+
+  <h2>6. Scroll-triggered and pinned scenes</h2>
+  <ul>
+    <li>Feature bento: staggered fade-up, 80ms between cells, IntersectionObserver <code>threshold 0.15, rootMargin -10%</code>.</li>
+    <li>Featured work: sticky-stack. Each card pins at <code>top: 0</code>; as next card enters, previous scales to 0.92 and fades to 0.55. Pin duration ends when last card top hits viewport top.</li>
+    <li>Process rail: horizontal progress line draws as vertical scroll enters, tied to <code>IntersectionObserver</code> not scroll listeners.</li>
+    <li>Pinned hero (optional): only on desktop widths >= 1024px and only when <code>prefers-reduced-motion: no-preference</code>.</li>
+  </ul>
+
+  <h2>7. Hover and micro-interactions</h2>
+  <ul>
+    <li>Primary button: scale 0.98 on active; trailing icon translates 4px right and 1px up, scales to 1.05. 280ms.</li>
+    <li>Nav links: underline slides from left, 200ms, hairline to signal color.</li>
+    <li>Cards: spotlight border illuminates; inner content shifts 2px up. No scale bounce.</li>
+    <li>Magnetic pull (desktop only): cursor proximity pulls primary button 3px max, spring stiffness 120 damping 18. Disabled below 768px.</li>
+    <li>Focus: 2px signal outline, 2px offset, always visible.</li>
+  </ul>
+
+  <h2>8. Scene transitions</h2>
+  <ul>
+    <li>Route changes: crossfade 220ms with 8px vertical slide, respects motion preference.</li>
+    <li>Modal/overlay: backdrop blur 12px, content scale 0.98 to 1, opacity 0 to 1 in 280ms.</li>
+    <li>Toast: slide from bottom 12px over 220ms, auto-dismiss 4s, exit reverse.</li>
+  </ul>
+
+  <h2>9. Mobile strategy</h2>
+  <ul>
+    <li>Disable parallax, pinned sections, magnetic hover, and hover-only reveals below 768px.</li>
+    <li>Replace hover reveals with tap toggles and larger tap targets (min 44px).</li>
+    <li>Reduce stagger counts by 40% to avoid long sequences on small screens.</li>
+    <li>Prefer IntersectionObserver and CSS transitions over JS scroll tracking.</li>
+  </ul>
+
+  <h2>10. Reduced motion</h2>
+  <ul>
+    <li>All transforms beyond opacity removed; fades only, max 200ms.</li>
+    <li>Pinned sections become static stacks; horizontal progress becomes instant.</li>
+    <li>Infinite/looping motion disabled.</li>
+    <li>Respect <code>prefers-reduced-motion: reduce</code> via media query and JS check before arming observers.</li>
+  </ul>
+
+  <h2>11. Performance requirements</h2>
+  <ul>
+    <li>Animate only transform and opacity; never top/left/width/height.</li>
+    <li><code>will-change</code> only on actively animating elements, removed after completion.</li>
+    <li>Grain/noise fixed, pointer-events none, never on scroll containers.</li>
+    <li>LCP under 2.5s, INP under 200ms, CLS under 0.1.</li>
+    <li>No <code>window.scroll</code> listeners; use IntersectionObserver or Motion useScroll equivalent.</li>
+    <li>Lazy-hydrate animation bundles below the fold.</li>
+  </ul>
+
+  <h2>12. Implementation architecture</h2>
+  <ul>
+    <li><strong>Layer A (CSS):</strong> tokens, hover, focus, surface transitions. Works without JS.</li>
+    <li><strong>Layer B (JS observer):</strong> reveals, progress lines, spotlight masking via requestAnimationFrame lerp.</li>
+    <li><strong>Layer C (pinned scene):</strong> isolated client components with IntersectionObserver + CSS transitions; GSAP optional only for desktop pinned stacks.</li>
+    <li>Client boundaries via "use client" leaf components; server components render static layouts.</li>
+    <li>Cleanup on unmount: disconnect observers, cancel frames, remove listeners.</li>
+  </ul>
+
+  <h2>13. Accessibility</h2>
+  <ul>
+    <li>All motion pauses under reduced motion and on low-battery mode when available.</li>
+    <li>Focus-visible on every interactive element in signal color.</li>
+    <li>No content hidden solely behind animation; initial state opacity >= 0.01 for critical text.</li>
+    <li>Animation does not auto-play audio or video; media remains paused until interaction.</li>
+  </ul>
+
+  <p class="muted">End of motion system. Companion to creative-direction.html.</p>
+</div>
+</body>
+</html>

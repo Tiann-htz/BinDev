@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BinDev Creative Direction</title>
+  <style>
+    :root {
+      --bg: #F4F6FA;
+      --bg-deep: #EAF0F7;
+      --fg: #0B0F14;
+      --fg-muted: #4A5566;
+      --accent: #B8FF3D;
+      --accent-ink: #0B0F14;
+      --surface: #FFFFFF;
+      --hair: #D4DBE6;
+      --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+      --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0B0F14;
+        --bg-deep: #111722;
+        --fg: #EAEFF7;
+        --fg-muted: #9BA6B5;
+        --surface: #121821;
+        --hair: #1F2530;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0B0F14;
+      --bg-deep: #111722;
+      --fg: #EAEFF7;
+      --fg-muted: #9BA6B5;
+      --surface: #121821;
+      --hair: #1F2530;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body), Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    h1,h2,h3 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.05; margin: 0 0 16px; }
+    h1 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 700; }
+    h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700; margin-top: 56px; }
+    h3 { font-size: 1.2rem; font-weight: 600; margin-top: 24px; }
+    p { max-width: 68ch; }
+    section { padding: 56px 0; }
+    .eyebrow { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--fg-muted); margin-bottom: 12px; }
+    .swatch { display: inline-block; width: 56px; height: 56px; border-radius: 12px; border: 1px solid var(--hair); vertical-align: middle; margin: 4px 8px 4px 0; }
+    .token { font-family: var(--font-mono); font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--hair); font-size: 14px; vertical-align: top; }
+    th { font-weight: 600; color: var(--fg-muted); }
+    code { font-family: var(--font-mono); font-size: 0.9em; background: var(--bg-deep); padding: 2px 6px; border-radius: 4px; }
+    .pill { display: inline-block; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--hair); font-size: 12px; margin: 4px 4px 0 0; }
+    .card { background: var(--surface); border: 1px solid var(--hair); border-radius: 16px; padding: 20px; margin: 16px 0; }
+    ul li { margin-bottom: 6px; }
+    @media (max-width: 640px) { .wrap { padding: 0 16px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section>
+      <div class="eyebrow">Creative Direction · BinDev</div>
+      <h1>BinDev, recut as a precision instrument.</h1>
+      <p>Reading this as: B2B SaaS / studio landing for technical buyers and small-business founders, with a cold-luxury, instrument-grade language, leaning toward a graphite palette, Bricolage Grotesque display, restrained but motivated motion.</p>
+      <p><strong>Dials:</strong> DESIGN_VARIANCE 8 · MOTION_INTENSITY 6 · VISUAL_DENSITY 4. Single accent. One theme (dark). No theme flip mid-scroll.</p>
+    </section>
+
+    <section>
+      <h2>Narrative spine</h2>
+      <p>Tool / precision instrument. The whole site reads like a machined object: calibrated spacing, hairline rails, tabular figures, a single accent that behaves like an LED status indicator. Nothing decorative. Every element earns its pixel.</p>
+    </section>
+
+    <section>
+      <h2>Art direction</h2>
+      <p>Ethereal Glass meets Soft Structuralism, but cooled down: deep graphite grounds, off-bone text, one acid-lime signal color used like a status light. Photography is cold, high-contrast, and architectural (concrete, brushed metal, screens in dark rooms). No warm stock. Backgrounds use a faint technical grid plus a single radial volumetric glow in the ledger corner. Grain is fixed, pointer-events none, barely visible.</p>
+      <div class="card">
+        <strong>Absolute-zero bans applied:</strong> no Inter/Arial, no Bootstrap 3-column grid, no sticky edge-to-edge navbar, no AI purple gradient, no generic box shadows, no meta-labels ("SECTION 01"), no em-dashes, no decorative dots, no locale/weather strips, no fake product UI built from divs.
+      </div>
+    </section>
+
+    <section>
+      <h2>Color palette (one palette, one accent, locked)</h2>
+      <p>Graphite ground with an acid-lime signal. Desaturated everywhere but the accent, which is used only for the primary CTA, active states, and one "live" indicator per viewport.</p>
+      <div>
+        <span class="swatch" style="background:#0B0F14"></span><span class="token">#0B0F14 ink-950 ground</span><br>
+        <span class="swatch" style="background:#111722"></span><span class="token">#111722 ink-900 surface</span><br>
+        <span class="swatch" style="background:#1F2530"></span><span class="token">#1F2530 hairline / rail</span><br>
+        <span class="swatch" style="background:#EAEFF7"></span><span class="token">#EAEFF7 bone primary text</span><br>
+        <span class="swatch" style="background:#9BA6B5"></span><span class="token">#9BA6B5 muted secondary text</span><br>
+        <span class="swatch" style="background:#B8FF3D"></span><span class="token">#B8FF3D signal (accent, CTA only)</span><br>
+        <span class="swatch" style="background:#3DFFB8"></span><span class="token">#3DFFB8 signal-off (hover wash)</span>
+      </div>
+      <p>Semantic map: ground <code>--bg</code>, raised <code>--surface</code>, hairline <code>--hair</code>, primary <code>--fg</code>, muted <code>--fg-muted</code>, accent <code>--signal</code>. Accent saturation stays at 100% only inside the 12px mark, buttons, and one per-section indicator. Everywhere else it is tinted to 12% opacity.</p>
+    </section>
+
+    <section>
+      <h2>Typography</h2>
+      <ul>
+        <li><strong>Display:</strong> Bricolage Grotesque, 500-800. Hero at <code>clamp(2.6rem, 5.5vw, 4.6rem)</code>, tight tracking <code>-0.03em</code>, max 2 lines.</li>
+        <li><strong>Body:</strong> Plus Jakarta Sans, 400-600, 16px, leading 1.6, max 65ch.</li>
+        <li><strong>Mono:</strong> JetBrains Mono for eyebrows, prices, figures, stack tags, table of contents.</li>
+        <li><strong>Rules:</strong> no all-caps everywhere (only mono eyebrows, max 1 per 3 sections), tabular nums for all figures, italic reserved for emphasis inside the same family only, never mixed-family emphasis.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Layout system</h2>
+      <ul>
+        <li><strong>Container:</strong> <code>max-w-[1280px] mx-auto px-6 md:px-10</code>, sections breathe at <code>py-24 md:py-36</code>.</li>
+        <li><strong>Hero:</strong> right-text / left-image inverted composition, top padding capped at <code>pt-24</code>, max 4 text elements.</li>
+        <li><strong>Feature grid:</strong> asymmetric bento, <code>grid-flow-dense</code>, cells sized to content count (N items to N cells, zero empty cells), at least 2 cells carry real imagery or tinted fills.</li>
+        <li><strong>Case studies:</strong> sticky-stack on scroll (GSAP <code>start: "top top"</code>, previous card scales to 0.92 and fades to 0.55).</li>
+        <li><strong>Pricing:</strong> two columns, recommended tier emphasized by signal rail not height.</li>
+        <li><strong>Footer:</strong> single row of three groups, no 4-column link farm.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Imagery, lighting, texture</h2>
+      <ul>
+        <li><strong>Style:</strong> cold editorial photography, high contrast, desaturated 15%, duotone graded to ink + signal on case-study thumbnails.</li>
+        <li><strong>Lighting:</strong> single top-left source across all visuals; shadows tinted to ink (not black). Spotlight borders on cards (cursor-driven, 1px, 120px radius).</li>
+        <li><strong>Depth:</strong> double-bezel cards (outer shell <code>bg-white/5 p-1.5 rounded-[2rem]</code>, inner core <code>bg-surface rounded-[calc(2rem-0.375rem)]</code>, inset 1px highlight).</li>
+        <li><strong>Texture:</strong> fixed grain overlay at 3% opacity, pointer-events none, never on scroll containers.</li>
+        <li><strong>Background:</strong> ink ground + faint 24px technical dotted grid at 6% opacity + one radial volumetric glow (signal at 8% opacity) anchored top-right.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Component blueprint</h2>
+      <table>
+        <thead><tr><th>Component</th><th>Spec</th></tr></thead>
+        <tbody>
+          <tr><td>Nav (floating glass pill)</td><td>Detached <code>mt-6 mx-auto w-max rounded-full</code>, backdrop-blur only on this fixed element, signal dot for current page. Hamburger morphs to X with staggered mask reveal (delay 100/150/200).</td></tr>
+          <tr><td>Primary button</td><td>Pill <code>px-6 py-3</code>, nested trailing-icon circle <code>w-8 h-8 rounded-full bg-fg/10</code> translates diagonally on hover, scale 0.98 on active.</td></tr>
+          <tr><td>Secondary button</td><td>Ghost outline, 1px hairline, no fill, underline inline arrow variant.</td></tr>
+          <tr><td>Card</td><td>Double-bezel, no generic shadow, inset 1px highlight, hover spotlight border.</td></tr>
+          <tr><td>Eyebrow</td><td>Mono, 10.5px, uppercase, tracking 0.22em, max 1 per 3 sections.</td></tr>
+          <tr><td>Metric strip</td><td>Tabular nums, hairline dividers, no filled progress bars.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Motion choreography</h2>
+      <ul>
+        <li>Primary easing: <code>cubic-bezier(0.32, 0.72, 0, 1)</code>, 600-800ms for entry, 200-300ms for interactions.</li>
+        <li>Hero: staggered mask reveal on load (label, headline, sub, CTA with 80ms offsets), background glow fades in.</li>
+        <li>Scroll reveals: <code>translate-y-16 blur-md opacity-0</code> to rest over 800ms via IntersectionObserver; never window scroll listeners.</li>
+        <li>Button magnetic hover at MOTION 6: cursor proximity pulls 3px, spring stiffness 120, damping 18.</li>
+        <li>Respects <code>prefers-reduced-motion</code>: all transforms collapse to opacity-only fades.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Section plan (6 sections)</h2>
+      <table>
+        <thead><tr><th>#</th><th>Section</th><th>Composition anchor</th><th>Background mode</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Hero</td><td>Right-text / left-image inverted, mono brand strip top-left</td><td>Ink + radial signal glow top-right</td></tr>
+          <tr><td>2</td><td>Trust bar</td><td>Centered marquee of client logos (one marquee, the only one)</td><td>Ink surface + hairline rail</td></tr>
+          <tr><td>3</td><td>What we build</td><td>Asymmetric bento, dense grid-flow-dense, varied image cells</td><td>Ink deep + technical grid</td></tr>
+          <tr><td>4</td><td>Featured work</td><td>Sticky stack, previous card shrinks as next arrives</td><td>Ink ground + duotone thumbs</td></tr>
+          <tr><td>5</td><td>How we work + pricing</td><td>Two-column, numbered vertical rhythm, two tiers</td><td>Ink surface, quiet</td></tr>
+          <tr><td>6</td><td>Closing CTA</td><td>Mini-minimalist, single line, oversized headline, one button</td><td>Signal-tinted ground, calm</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Eyebrow budget:</strong> sections 1 and 3 only (ceil(6/3) = 2). Everywhere else the headline stands alone.</p>
+    </section>
+
+    <section>
+      <h2>Responsive and mobile</h2>
+      <ul>
+        <li>Bento collapses to single column at &lt;768px with generous <code>gap-6</code>, no rotation or overlap on mobile.</li>
+        <li>Hero max 2 lines, subtext under 20 words, CTA visible without scroll. Top padding <code>pt-20</code> on mobile.</li>
+        <li>Sticky stack becomes a simple vertical list on mobile (removes pin and scale).</li>
+        <li>Nav collapses to hamburger with morphing X and full-screen glass overlay.</li>
+        <li>Tap targets min 44px, focus rings visible in signal at 2px.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Copy register</h2>
+      <p>Plain, specific, no AI copywriting. Banned words: elevate, seamless, unleash, next-gen, game-changer, delve, tapestry. Numbers are real or explicitly labeled mock. One copy register per page (instrument-grade, declarative). No em-dashes: use hyphens or periods. No version labels, no locale strips, no scroll cues.</p>
+    </section>
+
+    <section>
+      <h2>Implementation map (BinDev repo)</h2>
+      <table>
+        <thead><tr><th>File</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td><code>src/app/globals.css</code></td><td>Replace tokens with graphite + signal variables, grid + grain.</td></tr>
+          <tr><td><code>src/app/layout.js</code></td><td>Swap to Bricolage Grotesque + Plus Jakarta Sans + JetBrains Mono via next/font.</td></tr>
+          <tr><td><code>src/components/layout/Navbar.js</code></td><td>Floating glass pill, morphing hamburger, staggered overlay.</td></tr>
+          <tr><td><code>src/components/sections/home/Hero.js</code></td><td>Inverted composition, double-bezel asset, 4-element stack.</td></tr>
+          <tr><td><code>src/components/sections/home/ServiceCards.js</code></td><td>Asymmetric bento with image cells.</td></tr>
+          <tr><td><code>src/components/sections/home/FeaturedProjects.js</code></td><td>Duotone thumbnails, sticky stack.</td></tr>
+          <tr><td><code>src/components/sections/home/Process.js</code></td><td>Vertical numbered rhythm.</td></tr>
+          <tr><td><code>src/components/sections/home/FinalCTA.js</code></td><td>Mini-minimalist close.</td></tr>
+          <tr><td><code>src/components/ui/Button.js</code></td><td>Button-in-button nested icon, magnetic hover.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Pre-flight (design-level)</h2>
+      <ul>
+        <li>One accent, locked across all sections.</li>
+        <li>One theme, locked (dark).</li>
+        <li>One radius scale: 8px inputs, 16px cards, 999px buttons.</li>
+        <li>Eyebrows capped at 2 of 6.</li>
+        <li>No duplicate CTA intent: "Book a free call" is the label everywhere.</li>
+        <li>No div-based fake product UI; hero ships a real image.</li>
+        <li>Motion motivated (hierarchy, storytelling, feedback, state) and reduced-motion compliant.</li>
+        <li>Hero fits viewport: headline 2 lines, subtext 16 words, CTA visible.</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

@@ -24,14 +24,14 @@ const columns = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-navy text-white">
+    <footer className="border-t border-hair bg-background text-foreground">
       <Container className="py-12">
         <div className="grid gap-10 pb-10 md:grid-cols-[2fr_1fr_1fr]">
           <div>
             <Link
               href="/"
               aria-label="BinDev home"
-              className="relative block h-14 w-[91px] overflow-hidden"
+              className="relative block h-10 w-[64px] overflow-hidden"
             >
               <Image
                 src="/logo.jpg"
@@ -47,14 +47,14 @@ export default function Footer() {
                 }}
               />
             </Link>
-            <p className="mt-4 max-w-xs text-sm text-white/70">
+            <p className="mt-4 max-w-xs text-sm text-muted">
               Websites, web apps, and custom software for small businesses.
             </p>
           </div>
 
           {columns.map((column) => (
             <nav key={column.title} aria-label={column.title}>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-brand">
+              <h3 className="text-xs font-medium uppercase tracking-wide text-signal">
                 {column.title}
               </h3>
               <ul className="mt-4 space-y-3">
@@ -62,7 +62,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/70 transition hover:text-brand"
+                      className="text-sm text-muted transition hover:text-foreground"
                     >
                       {link.label}
                     </Link>
@@ -73,8 +73,8 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-white/10 pt-6 text-sm text-white/50">
-          © 2026 BinDev. All rights reserved.
+        <div className="border-t border-hair pt-6 text-sm text-muted">
+          (c) 2026 BinDev. All rights reserved.
         </div>
       </Container>
     </footer>

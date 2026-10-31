@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Container from "@/components/ui/Container";
+import Reveal from "@/components/ui/Reveal";
 import { services } from "@/data/services";
 
 const icons = {
@@ -33,7 +34,7 @@ function Icon({ name }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -46,38 +47,59 @@ function Icon({ name }) {
 
 export default function ServiceCards() {
   return (
-    <section className="border-t border-white/10 bg-navy text-white">
-      <Container className="py-16 sm:py-20">
+    <section className="border-t border-hair bg-background text-foreground">
+      <Container className="py-20 sm:py-28">
         <div className="max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            What we can build for you
+            What we can build
           </h2>
-          <p className="mt-4 text-lg text-white/75">
-            Pick the size that fits your business. We will help you choose.
+          <p className="mt-4 text-lg text-muted">
+            Pick the size that fits. We help you choose the right scope.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {services.map((service) => (
-            <Link
-              key={service.slug}
-              href={service.href}
-              className="group flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-brand/60 hover:bg-white/10"
-            >
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                <Icon name={service.icon} />
-              </span>
-              <h3 className="mt-5 text-xl font-semibold">{service.title}</h3>
-              <p className="mt-3 flex-1 text-white/75">{service.description}</p>
-              <div className="mt-6 flex items-center justify-between text-sm">
-                <span className="text-white/60">{service.note}</span>
-                <span className="font-medium text-brand transition group-hover:translate-x-1">
-                  Learn more &rarr;
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <Reveal delay={120} className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-6 md:grid-flow-dense">
+          {services.map((service, i) => {
+            const span =
+              i === 0
+                ? "md:col-span-4 md:row-span-2"
+                : i === 1
+                ? "md:col-span-2"
+                : "md:col-span-2";
+            const tone =
+              i === 0
+                ? "bg-[radial-gradient(80%_80%_at_0%_0%,rgba(184,255,61,0.12),transparent)]"
+                : "bg-surface";
+            return (
+              <Link
+                key={service.slug}
+                href={service.href}
+                className={`group flex flex-col rounded-2xl border border-hair ${tone} p-6 transition hover:border-signal/40`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-signal/10 text-signal">
+                    <Icon name={service.icon} />
+                  </span>
+                  {i === 0 && (
+                    <span className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted">
+                      Most common
+                    </span>
+                  )}
+                </div>
+                <h3 className="mt-6 text-xl font-semibold text-foreground">
+                  {service.title}
+                </h3>
+                <p className="mt-3 flex-1 text-muted">{service.description}</p>
+                <div className="mt-6 flex items-center justify-between text-sm">
+                  <span className="text-muted">{service.note}</span>
+                  <span className="font-medium text-signal transition group-hover:translate-x-1">
+                    Learn more -&gt;
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </Reveal>
       </Container>
     </section>
   );

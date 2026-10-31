@@ -8,7 +8,7 @@ export const services = [
     description:
       "Clean, fast websites that look good on any phone or computer and help customers find and contact you.",
     note: "Starting at $175",
-    href: "/services",
+    href: "/services/websites",
   },
   {
     slug: "web-apps",
@@ -17,7 +17,7 @@ export const services = [
     description:
       "Online tools for your business, like booking, dashboards, and customer portals, built to be simple to use.",
     note: "Priced per project",
-    href: "/services",
+    href: "/services/web-apps",
   },
   {
     slug: "custom-software",
@@ -26,6 +26,6 @@ export const services = [
     description:
       "A system made just for how you work, so you can stop fighting spreadsheets and tools that don't fit.",
     note: "Priced per project",
-    href: "/services",
+    href: "/services/custom-software",
   },
 ];

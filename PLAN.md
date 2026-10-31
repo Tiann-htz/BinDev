@@ -3,17 +3,17 @@
 > Source of truth. After every applied change, update **Current status** and **Status log** below.
 
 ## Current status
-- **Done:** 0.1 Project installed, 0.2 Logo saved, 0.3 Folders created, 1.1 Theme tokens, 1.2 Button + Container, 1.3 Navbar, 1.4 Footer, 1.5 Hero, 1.6 ServiceCards, 1.7 FeaturedProjects, 1.8 Process, 1.9 FinalCTA
+- **Done:** Housekeeping, 0.1-0.3, 1.1-1.9, 1.10-1.12, 2.1, 2.2, 2.3
 - **In progress:** none
-- **Next:** 1.10 Contact page `InquiryForm.js` (UI only)
+- **Next:** 2.4 Work page + case study template + case studies
 
-## Brand (from logo)
-- Cyan accent: `#03DEFE`
-- Navy (text / dark sections): `#080E1C`
-- White: `#FFFFFF` (page background for now)
-- Contrast note: cyan on white is hard to read as text. Use cyan for buttons/highlights (with navy text), and a darker cyan `#0891B2` for text links.
-- Logo file: `public/logo.jpg` (current dark-bg version, final for now). A white-bg version will be made later and swapped in.
-- Because the logo has a dark background, it always sits on a navy surface (Navbar, Footer, or a navy card). The page body stays white.
+## Brand (current code)
+- Theme: one dark theme only.
+- Graphite ground: `#0B0F14`; surface `#121821`; hairline `#1F2530`.
+- Text: `#EAEFF7` primary, `#9BA6B5` muted.
+- Accent "signal": `#B8FF3D` (primary CTA, active states, one indicator per vviewport only).
+- Fonts: Bricolage Grotesque (display), Plus Jakarta Sans (body), JetBrains Mono (eyebrows, prices, figures).
+- Logo file: `public/logo.jpg` (dark bg). It sits on a dark surface (navbar/footer).
 
 ## Folder structure
 ```
@@ -88,8 +88,15 @@ Do NOT create `src/pages/`. Next.js treats it as the old Pages Router and it wil
 - 2026-10-31: Done 1.3 `layout/Navbar.js` (sticky navy bar, cropped logo, links: Services/Work/Pricing/About, "Book a free call" button, mobile menu). Added to `app/layout.js` so it shows on every page. Links lead to pages that don't exist yet (404 until Phase 2).
 - 2026-10-31: Done 1.4 `layout/Footer.js` (navy; "Have a project in mind?" + Book a free call button, logo, link columns, copyright 2026 hardcoded on purpose). Added to `app/layout.js`; page content is wrapped in `flex-1` so the footer sits at the bottom. Note: Home `FinalCTA` (1.9) may overlap with the footer CTA, decide then.
 - 2026-10-31: Done 1.5 Home `Hero.js` (badge, headline, short intro, "Book a free call" + "See our services" buttons, "$175" line, soft cyan glow). Replaced the starter `app/page.js`, which now only assembles sections. Headline is a placeholder default: "We build websites and web apps that help your business grow." Can be changed anytime.
-- 2026-10-31: Decision change: the whole site uses ONE navy theme (Navbar, Hero, Footer and page body all #080E1C, white text), no light/white theme. Updated globals.css (--background navy, --foreground white, color-scheme: dark), layout.js (iewport.colorScheme = dark) and rewrote Hero.js (navy bg, white text, cyan badge text, secondary button uses the light variant). This fixes the unreadable Hero (navy text on a dark background). New sections must use white text on navy.
+- 2026-10-31: Decision change: the whole site uses ONE navy theme (Navbar, Hero, Footer and page body all #080E1C, white text), no light/white theme. Updated globals.css (--background navy, --foreground white, color-scheme: dark), layout.js (vviewport.colorScheme = dark) and rewrote Hero.js (navy bg, white text, cyan badge text, secondary button uses the light variant). This fixes the unreadable Hero (navy text on a dark background). New sections must use white text on navy.
 - 2026-10-31: Done 1.6 Home `ServiceCards.js` + `data/services.js` (3 cards: Websites from $175, Web apps, Custom software; navy theme, cyan icons, text lives in the data file). Added to `app/page.js` after Hero. Cards link to `/services` (404 until Phase 2).
 - 2026-10-31: Done 1.7 Home `FeaturedProjects.js` + `data/projects.js` (Quest2Go Research Platform + Sample Project 1 and 2 as placeholders). Added to `app/page.js` after ServiceCards. TODO: Quest2Go screenshot (`image`) and live link (`url`) in `data/projects.js`; replace the two samples with real projects. `/work` button 404s until Phase 2.
 - 2026-10-31: Done 1.8 Home `Process.js` + `data/process.js` (4 steps: Free call, Plan and quote, Build, Launch and support). Export is named `processSteps` on purpose, to avoid clashing with the Node global `process`. Added to `app/page.js` after FeaturedProjects.
 - 2026-10-31: Done 1.9 Home `FinalCTA.js` (centered "Have a project in mind?" + Book a free call button, cyan glow). Decision: the CTA block was REMOVED from `Footer.js` (Footer now only has logo, link columns, copyright, with a top border). So the CTA only shows on Home. Other pages (Services, Pricing, About, Work) need their own CTA section later; reuse `FinalCTA` for that.
+- 2026-10-31: Housekeeping done: PLAN brand updated to graphite + signal, README replaced, gitignore completed, package name changed to bindev, sample projects hidden and FeaturedProjects now shows only real projects (currently Quest2Go).
+- 2026-10-31: Done 1.10 Contact page (UI only): `/contact` route, `InquiryForm` (validation, honeypot, success state, accessible focus) and options data in `src/data/inquiry.js`. Validation helper in `src/lib/validation.js`. No backend yet.
+- 2026-10-31: Done 1.11 BookingEmbed: env-driven (`NEXT_PUBLIC_BOOKING_URL`) with friendly fallback plus optional email link (`NEXT_PUBLIC_CONTACT_EMAIL`). Added `.env.example`.
+- 2026-10-31: Done 1.12 inquiry API skeleton: `/api/inquiry` validates, rejects honeypot and rate-limits; DB insert and Resend email are TODO (skeleton only, no new dependencies). Form now posts to it.
+- 2026-10-31: Done 2.1 Services overview and 3 service pages: `/services`, `/services/websites`, `/services/web-apps`, `/services/custom-software`. Home ServiceCards now link to specific pages. Content in `src/data/serviceDetails.js`.
+- 2026-10-31: Done 2.2 Pricing page: `/pricing` with suggested prices (Starter $175 final, Business from $450 suggested, custom quotes, Care Plan $40-120 suggested), signal rail on recommended tier, and FAQ. Prices live in `src/data/pricing.js`.
+- 2026-10-31: Done 2.3 About page: `/about` with story, values, team (published only; placeholder hidden), and FAQ. Team data in `src/data/team.js`.

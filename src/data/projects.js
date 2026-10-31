@@ -6,6 +6,7 @@
 export const projects = [
   {
     slug: "quest2go",
+    featured: true,
     category: "Web system",
     title: "Quest2Go Research Platform",
     description:
@@ -14,8 +15,10 @@ export const projects = [
     image: null, // TODO: add screenshot, e.g. "/projects/quest2go.jpg"
     url: null, // TODO: add the live site link
   },
+  // Hidden on the live site until real projects replace them.
   {
     slug: "sample-1",
+    featured: false,
     category: "Website",
     title: "Sample Project 1",
     description:
@@ -26,6 +29,7 @@ export const projects = [
   },
   {
     slug: "sample-2",
+    featured: false,
     category: "Web app",
     title: "Sample Project 2",
     description:

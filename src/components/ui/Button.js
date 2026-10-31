@@ -1,24 +1,41 @@
 import Link from "next/link";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-dark";
+  "group inline-flex items-center justify-between gap-3 rounded-full font-semibold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal active:scale-[0.98]";
 
 const variants = {
-  // The loudest button on any page. Use it for "Book a free call".
   primary:
-    "bg-brand text-navy shadow-[0_0_24px_rgba(3,222,254,0.45)] hover:shadow-[0_0_32px_rgba(3,222,254,0.65)] hover:brightness-95",
-  // Quiet button on white backgrounds.
-  outline: "border border-navy/20 text-navy hover:border-navy hover:bg-navy/5",
-  // Solid navy button on white backgrounds.
-  dark: "bg-navy text-white hover:bg-navy/90",
-  // Quiet button on navy backgrounds (Navbar, Footer, dark sections).
-  light: "border border-white/30 text-white hover:bg-white/10",
+    "bg-signal text-signal-ink shadow-[0_0_24px_rgba(184,255,61,0.25)] hover:shadow-[0_0_32px_rgba(184,255,61,0.4)]",
+  outline:
+    "border border-hair text-foreground hover:border-foreground/40 hover:bg-surface",
+  dark: "bg-surface text-foreground border border-hair hover:bg-surface/80",
+  light: "border border-hair text-foreground hover:bg-surface",
 };
 
 const sizes = {
   md: "px-5 py-2.5 text-sm",
-  lg: "px-7 py-3.5 text-base",
+  lg: "px-6 py-3 text-base",
 };
+
+function TrailingIcon() {
+  return (
+    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground/10 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M7 17L17 7M9 7h8v8" />
+      </svg>
+    </span>
+  );
+}
 
 export default function Button({
   href,
@@ -28,19 +45,21 @@ export default function Button({
   children,
   ...props
 }) {
-  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`.trim();
 
   if (href) {
     return (
       <Link href={href} className={classes} {...props}>
-        {children}
+        <span>{children}</span>
+        <TrailingIcon />
       </Link>
     );
   }
 
   return (
     <button type="button" className={classes} {...props}>
-      {children}
+      <span>{children}</span>
+      <TrailingIcon />
     </button>
   );
 }
