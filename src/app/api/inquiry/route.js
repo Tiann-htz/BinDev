@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { validateInquiry } from "@/lib/validation";
 
-// Very small in-memory rate limiter. Good enough for a single instance;
-// replace with Upstash/Supabase-based limiting in production if needed.
 const buckets = new Map();
 const LIMIT = 5;
 const WINDOW_MS = 60 * 60 * 1000;
@@ -37,7 +35,6 @@ export async function POST(request) {
     company: payload?.company,
   };
 
-  // Honeypot: silently reject but look successful to bots.
   if (values.company) {
     return NextResponse.json({ ok: true });
   }
@@ -57,10 +54,85 @@ export async function POST(request) {
     );
   }
 
-  // TODO (1.12 backend): insert into Supabase table "inquiries"
-  // (id, name, email, need, budget, timeline, message, created_at).
-  // TODO: send an email alert via Resend to process.env.NOTIFY_EMAIL.
-  // For now we only validate and return success.
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const notifyEmail = process.env.NOTIFY_EMAIL || "bindevtechnologies@gmail.com";
+  const resendApiKey = process.env.RESEND_API_KEY;
+
+  // Persist to Supabase (server-side, using the service role key).
+  if (supabaseUrl && serviceRoleKey) {
+    try {
+      const res = await fetch(`${supabaseUrl}/rest/v1/inquiries`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: serviceRoleKey,
+          Authorization: `Bearer ${serviceRoleKey}`,
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({
+          name: values.name?.trim(),
+          email: values.email?.trim(),
+          need: values.need,
+          budget: values.budget,
+          timeline: values.timeline,
+          message: values.message?.trim(),
+        }),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Supabase insert failed:", res.status, text);
+        return NextResponse.json(
+          { ok: false, error: "Could not save your inquiry. Please try again." },
+          { status: 502 }
+        );
+      }
+    } catch (err) {
+      console.error("Supabase request error:", err);
+      return NextResponse.json(
+        { ok: false, error: "Could not save your inquiry. Please try again." },
+        { status: 502 }
+      );
+    }
+  } else {
+    console.warn("Supabase env vars missing; inquiry not persisted.");
+  }
+
+  // Email alert via Resend.
+  if (resendApiKey) {
+    try {
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: process.env.RESEND_FROM || "BinDev <onboarding@resend.dev>",
+          to: [notifyEmail],
+          reply_to: values.email?.trim(),
+          subject: `New inquiry from ${values.name?.trim()}`,
+          text: `New inquiry received
+
+Name: ${values.name}
+Email: ${values.email}
+Need: ${values.need}
+Budget: ${values.budget}
+Timeline: ${values.timeline}
+
+Message:
+${values.message}`,
+        }),
+      });
+    } catch (err) {
+      console.error("Resend email error:", err);
+    }
+  } else {
+    console.warn("RESEND_API_KEY missing; email alert not sent.");
+  }
 
   return NextResponse.json({ ok: true });
 }
