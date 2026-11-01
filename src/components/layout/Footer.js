@@ -28,26 +28,29 @@ export default function Footer() {
       <Container className="py-12">
         <div className="grid gap-10 pb-10 md:grid-cols-[2fr_1fr_1fr]">
           <div>
+            {/* Logo: mark on top, BinDev wordmark right below it.
+                Sizes: mark h-14 (56px), wordmark h-6 (24px), gap-3. */}
             <Link
               href="/"
               aria-label="BinDev home"
-              className="relative block h-10 w-[64px] overflow-hidden"
+              className="flex w-fit flex-col items-start gap-3"
             >
               <Image
-                src="/logo.jpg"
+                src="/brand/logo-mark.png"
+                alt=""
+                width={224}
+                height={168}
+                className="logo-adapt h-14 w-auto"
+              />
+              <Image
+                src="/brand/logo-wordmark.png"
                 alt="BinDev"
-                width={1024}
-                height={1024}
-                className="absolute max-w-none"
-                style={{
-                  width: "130.3%",
-                  height: "211.6%",
-                  left: "-14.9%",
-                  top: "-55.8%",
-                }}
+                width={526}
+                height={84}
+                className="logo-adapt h-6 w-auto"
               />
             </Link>
-            <p className="mt-4 max-w-xs text-sm text-muted">
+            <p className="mt-5 max-w-xs text-sm text-muted">
               Websites, web apps, and custom software for small businesses.
             </p>
           </div>

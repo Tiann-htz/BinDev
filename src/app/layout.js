@@ -58,16 +58,25 @@ const organizationJsonLd = {
 };
 
 export const viewport = {
-  colorScheme: "dark",
+  // Both themes are supported. ThemeToggle keeps the browser bar color in sync.
+  colorScheme: "dark light",
   themeColor: "#0B0F14",
 };
+
+// Runs before the page is painted: applies the saved theme (dark by default),
+// so the page never flashes the wrong colors. Keep in sync with ThemeToggle.js.
+const themeScript = `(function(){try{var t=localStorage.getItem("bindev-theme");document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark");}catch(e){}})();`;
 
 export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
       className={`${bricolage.variable} ${jakarta.variable} ${jetbrains.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <script
           type="application/ld+json"

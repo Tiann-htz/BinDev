@@ -4,14 +4,14 @@ import Reveal from "@/components/ui/Reveal";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-background text-foreground">
+    <section className="relative -mt-20 overflow-hidden bg-background text-foreground">
       {/* Technical grid */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 1px 1px, #EAEFF7 1px, transparent 0)",
+            "radial-gradient(circle at 1px 1px, var(--foreground) 1px, transparent 0)",
           backgroundSize: "24px 24px",
         }}
       />
@@ -19,10 +19,10 @@ export default function Hero() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-40 right-[-10%] h-[600px] w-[600px] rounded-full opacity-[0.12] blur-3xl"
-        style={{ background: "radial-gradient(circle, #B8FF3D 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, var(--signal) 0%, transparent 70%)" }}
       />
 
-      <Container className="relative py-20 sm:py-28 lg:py-36">
+      <Container className="relative pb-20 pt-40 sm:pb-28 sm:pt-48 lg:pb-36 lg:pt-56">
         <Reveal delay={0}>
           <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted">
             BinDev / software studio

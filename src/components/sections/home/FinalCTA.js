@@ -8,7 +8,7 @@ export default function FinalCTA() {
       {/* Soft cyan glow, same style as the Hero */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_50%_100%,rgba(184,255,61,0.12),transparent)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_50%_100%,color-mix(in_srgb,var(--signal)_12%,transparent),transparent)]"
       />
 
       <Container className="relative py-16 text-center sm:py-24">

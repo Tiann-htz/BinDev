@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Theme colors. Dark is the default. The light theme is switched on by
+   <html data-theme="light"> (see components/ui/ThemeToggle.js). Components only
+   use the tokens below (bg-background, text-foreground, border-hair, ...), so
+   never hardcode a color in a component. */
 :root {
   --background: #0B0F14;
   --foreground: #EAEFF7;
@@ -9,6 +13,19 @@
   --signal-ink: #0B0F14;
   --muted: #9BA6B5;
   color-scheme: dark;
+}
+
+/* Light theme. The lime accent becomes a deeper green so text and buttons stay
+   readable on a light background (contrast 4.5:1 or more). */
+:root[data-theme="light"] {
+  --background: #F6F8FA;
+  --foreground: #0B0F14;
+  --surface: #FFFFFF;
+  --hair: #DCE2E9;
+  --signal: #4D7C0F;
+  --signal-ink: #FFFFFF;
+  --muted: #4B5666;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -33,3 +50,44 @@ body {
   font-family: var(--font-sans), "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
 }
 
+/* Theme switch icons: show the sun in dark mode (click for light) and the moon
+   in light mode (click for dark). CSS only, so there is no flash on load. */
+.theme-sun {
+  display: inline-block;
+}
+.theme-moon {
+  display: none;
+}
+:root[data-theme="light"] .theme-sun {
+  display: none;
+}
+:root[data-theme="light"] .theme-moon {
+  display: inline-block;
+}
+
+/* The logo files are lime for the dark theme. In the light theme they are
+   darkened to a deeper green so they stay visible on a light background. */
+:root[data-theme="light"] .logo-adapt {
+  filter: brightness(0.5) saturate(1.6);
+}
+
+/* Smooth color change while switching theme (added for a moment by ThemeToggle) */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition: none !important;
+  }
+}

@@ -34,7 +34,7 @@ export default function ServicesPage() {
 
       <section className="border-t border-hair bg-background py-16 text-foreground">
         <Container>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-3">
             {services.map((service, i) => (
               <Reveal key={service.slug} delay={i * 100}>
                 <Link

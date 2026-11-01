@@ -58,23 +58,23 @@ export default function ServiceCards() {
           </p>
         </div>
 
-        <Reveal delay={120} className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-6 md:grid-flow-dense">
+        <Reveal delay={120} className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-flow-dense lg:grid-cols-6">
           {services.map((service, i) => {
             const span =
               i === 0
-                ? "md:col-span-4 md:row-span-2"
+                ? "md:col-span-2 lg:col-span-4 lg:row-span-2"
                 : i === 1
-                ? "md:col-span-2"
-                : "md:col-span-2";
+                ? "lg:col-span-2"
+                : "lg:col-span-2";
             const tone =
               i === 0
-                ? "bg-[radial-gradient(80%_80%_at_0%_0%,rgba(184,255,61,0.12),transparent)]"
+                ? "bg-[radial-gradient(80%_80%_at_0%_0%,color-mix(in_srgb,var(--signal)_12%,transparent),transparent)]"
                 : "bg-surface";
             return (
               <Link
                 key={service.slug}
                 href={service.href}
-                className={`group flex flex-col rounded-2xl border border-hair ${tone} p-6 transition hover:border-signal/40`}
+                className={`group flex min-w-0 flex-col rounded-2xl border border-hair ${span} ${tone} p-6 transition hover:border-signal/40`}
               >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-signal/10 text-signal">
@@ -90,9 +90,9 @@ export default function ServiceCards() {
                   {service.title}
                 </h3>
                 <p className="mt-3 flex-1 text-muted">{service.description}</p>
-                <div className="mt-6 flex items-center justify-between text-sm">
-                  <span className="text-muted">{service.note}</span>
-                  <span className="font-medium text-signal transition group-hover:translate-x-1">
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-sm">
+                  <span className="whitespace-nowrap text-muted">{service.note}</span>
+                  <span className="whitespace-nowrap font-medium text-signal transition group-hover:translate-x-1">
                     Learn more -&gt;
                   </span>
                 </div>

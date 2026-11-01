@@ -29,7 +29,7 @@ function ProjectImage({ project }) {
 
   // Placeholder until a real screenshot is added in data/projects.js
   return (
-    <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(70%_70%_at_50%_0%,rgba(184,255,61,0.15),transparent)]">
+    <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(70%_70%_at_50%_0%,color-mix(in_srgb,var(--signal)_15%,transparent),transparent)]">
       <span className="text-sm font-medium text-muted">
         Screenshot coming soon
       </span>
@@ -82,7 +82,7 @@ export default function FeaturedProjects() {
                   {project.stack.map((tech) => (
                     <li
                       key={tech}
-                      className="rounded-md bg-white/10 px-2.5 py-1 text-xs font-medium text-white/80"
+                      className="rounded-md bg-foreground/10 px-2.5 py-1 text-xs font-medium text-foreground/80"
                     >
                       {tech}
                     </li>

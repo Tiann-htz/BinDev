@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const links = [
   { href: "/services", label: "Services" },
@@ -17,27 +18,35 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 mt-6 w-full">
+    <header className="sticky top-0 z-40 h-20 w-full pt-6">
+      {/* Header is 80px tall (h-20 = 24px top gap + 56px bar). The Hero pulls
+          itself up by the same 80px (-mt-20) so its background reaches the top
+          of the page. If you change this height, change the Hero too. */}
       <Container className="flex h-14 items-center justify-between rounded-full border border-hair bg-surface/60 px-6 backdrop-blur-xl">
+        {/* Logo: mark on the left, BinDev wordmark right next to it.
+            Images are trimmed copies in /public/brand (made from logo1.png and
+            textlogo.png). Sizes: mark h-9 (36px), wordmark h-5 (20px), gap-2.5. */}
         <Link
           href="/"
           aria-label="BinDev home"
           onClick={() => setOpen(false)}
-          className="relative block h-10 w-[64px] overflow-hidden"
+          className="flex shrink-0 items-center gap-2.5"
         >
           <Image
-            src="/logo.jpg"
-            alt="BinDev"
-            width={1024}
-            height={1024}
+            src="/brand/logo-mark.png"
+            alt=""
+            width={224}
+            height={168}
             priority
-            className="absolute max-w-none"
-            style={{
-              width: "130.3%",
-              height: "211.6%",
-              left: "-14.9%",
-              top: "-55.8%",
-            }}
+            className="logo-adapt h-9 w-auto"
+          />
+          <Image
+            src="/brand/logo-wordmark.png"
+            alt="BinDev"
+            width={526}
+            height={84}
+            priority
+            className="logo-adapt h-5 w-auto"
           />
         </Link>
 
@@ -53,35 +62,40 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <Button href="/contact" size="md">
-            Book a free call
-          </Button>
-        </div>
+        {/* Right side: theme switch, then the call button (desktop) or the menu button (phone) */}
+        <div className="flex items-center gap-2 md:gap-3">
+          <ThemeToggle />
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground md:hidden"
-        >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
+          <div className="hidden md:block">
+            <Button href="/contact" size="md">
+              Book a free call
+            </Button>
+          </div>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground md:hidden"
           >
-            {open ? (
-              <path d="M6 6l12 12M18 6L6 18" />
-            ) : (
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            )}
-          </svg>
-        </button>
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              {open ? (
+                <path d="M6 6l12 12M18 6L6 18" />
+              ) : (
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              )}
+            </svg>
+          </button>
+        </div>
       </Container>
 
       {open && (

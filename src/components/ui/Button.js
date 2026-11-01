@@ -5,7 +5,7 @@ const base =
 
 const variants = {
   primary:
-    "bg-signal text-signal-ink shadow-[0_0_24px_rgba(184,255,61,0.25)] hover:shadow-[0_0_32px_rgba(184,255,61,0.4)]",
+    "bg-signal text-signal-ink shadow-[0_0_24px_color-mix(in_srgb,var(--signal)_25%,transparent)] hover:shadow-[0_0_32px_color-mix(in_srgb,var(--signal)_40%,transparent)]",
   outline:
     "border border-hair text-foreground hover:border-foreground/40 hover:bg-surface",
   dark: "bg-surface text-foreground border border-hair hover:bg-surface/80",
