@@ -91,3 +91,27 @@ body {
     transition: none !important;
   }
 }
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Ambient texture layer: fixed, GPU-cheap radial signal mesh + faint grain */
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(900px 500px at 85% -5%, color-mix(in srgb, var(--signal) 12%, transparent), transparent 60%),
+    radial-gradient(700px 400px at 10% 90%, color-mix(in srgb, var(--signal) 8%, transparent), transparent 60%),
+    radial-gradient(1px 1px at 1px 1px, color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 0);
+  background-size: auto, auto, 32px 32px;
+  opacity: 0.9;
+}

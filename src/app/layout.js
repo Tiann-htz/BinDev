@@ -3,6 +3,8 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SignalCursor from "@/components/ui/SignalCursor";
+import AmbientBackground from "@/components/ui/AmbientBackground";
 import { site } from "@/data/site";
 
 const bricolage = Bricolage_Grotesque({
@@ -78,6 +80,8 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <AmbientBackground />
+        <SignalCursor />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
