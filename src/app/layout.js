@@ -73,6 +73,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${bricolage.variable} ${jakarta.variable} ${jetbrains.variable} h-full antialiased`}
       suppressHydrationWarning
     >
