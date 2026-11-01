@@ -104,7 +104,7 @@ export async function POST(request) {
   // Email alert via Resend.
   if (resendApiKey) {
     try {
-      await fetch("https://api.resend.com/emails", {
+      const emailRes = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,6 +127,11 @@ Message:
 ${values.message}`,
         }),
       });
+      if (!emailRes.ok) {
+        console.error("Resend email failed:", emailRes.status, await emailRes.text());
+      } else {
+        console.log("Resend email sent:", await emailRes.text());
+      }
     } catch (err) {
       console.error("Resend email error:", err);
     }
