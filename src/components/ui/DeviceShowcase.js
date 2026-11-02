@@ -7,11 +7,12 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 // import in Hero.js (and the xl: grid classes marked there).
 //
 // Pure CSS 3D, no packages. The phone and laptop show a tiny version of the
-// BinDev site. It flips between them every 6 seconds, and the visitor can pick
-// with the Phone / Desktop buttons. Tilts toward the mouse. Hidden under 1280px.
+// BinDev site. Each device scrolls its page from top to the very end, then it
+// flips to the other device, which scrolls too. Tilts toward the mouse.
+// Hidden under 1280px.
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
-const SWITCH_MS = 6000;
+const HOLD_MS = 900; // pause at the end of the scroll before flipping
 
 function subscribeReduced(callback) {
   const query = window.matchMedia(REDUCED);
@@ -21,9 +22,9 @@ function subscribeReduced(callback) {
 
 const css = `
 @keyframes dv-float { from { transform: translateY(0); } to { transform: translateY(-12px); } }
-@keyframes dv-scroll { from { transform: translateY(0); } to { transform: translateY(var(--dv-dist, -200px)); } }
+@keyframes dv-scroll { from { transform: translateY(0); } to { transform: translateY(var(--dv-dist, 0px)); } }
 .dv-float { animation: dv-float 5s ease-in-out infinite alternate; }
-.dv-scroll { animation: dv-scroll 14s ease-in-out infinite alternate; }
+.dv-scroll { animation: dv-scroll var(--dv-time, 8s) ease-in-out 0.4s 1 forwards; }
 .dv-root[data-paused="true"] .dv-float,
 .dv-root[data-paused="true"] .dv-scroll { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) { .dv-float, .dv-scroll { animation: none; } }
@@ -34,6 +35,28 @@ const services = [
   { title: "Web apps", note: "Priced per project" },
   { title: "Custom software", note: "Priced per project" },
 ];
+
+const reasons = [
+  { title: "Fast sites", note: "Built to load quickly" },
+  { title: "Clear scope", note: "We help you pick the right size" },
+  { title: "Real people", note: "A small team you can talk to" },
+];
+
+function MiniCTA({ small }) {
+  return (
+    <span className="block rounded-[9px] border border-hair bg-surface p-3 text-center">
+      <span className={`block font-bold text-foreground ${small ? "text-[10px]" : "text-[12px]"}`}>
+        Have a project in mind?
+      </span>
+      <span className="mt-1 block text-[7.5px] text-muted">
+        Tell us what you need. The first call is free.
+      </span>
+      <span className="mx-auto mt-2 block w-fit rounded-full bg-signal px-3 py-1.5 text-[8px] font-semibold text-signal-ink">
+        Book a free call
+      </span>
+    </span>
+  );
+}
 
 function MiniLogo() {
   return (
@@ -66,55 +89,109 @@ function Headline({ className }) {
   );
 }
 
-function PhoneScreen() {
+// The page inside a screen. It sits in a clipped box BELOW the screen's header,
+// so scrolling text never shows behind the header or the status bar.
+// It measures how far it must scroll to reach the very end, scrolls once
+// (only while `active`), then calls onDone.
+function Scroller({ active, onDone, children }) {
+  const viewRef = useRef(null);
+  const contentRef = useRef(null);
+  const [dist, setDist] = useState(0);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    const content = contentRef.current;
+    if (!view || !content || typeof ResizeObserver === "undefined") return;
+    const measure = () => setDist(Math.max(0, content.offsetHeight - view.clientHeight));
+    const observer = new ResizeObserver(measure); // also fires once on start
+    observer.observe(view);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="relative h-full w-full overflow-hidden bg-background text-foreground">
-      <div className="flex h-9 items-end justify-between px-6 pb-1 text-[9px] font-semibold">
-        <span>9:41</span>
-        <span className="mb-[3px] block h-[6px] w-[14px] rounded-sm bg-foreground/70" />
-      </div>
-      <div className="flex items-center justify-between px-4 py-2">
-        <MiniLogo />
-        <span className="grid gap-[3px]">
-          <span className="block h-px w-3.5 bg-foreground" />
-          <span className="block h-px w-3.5 bg-foreground" />
-        </span>
-      </div>
-      <div className="dv-scroll px-4 pb-24" style={{ "--dv-dist": "-215px" }}>
-        <span className="mt-3 block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
-          BinDev / software studio
-        </span>
-        <Headline className="mt-2 text-[22px] leading-[1.02]" />
-        <span className="mt-3 block text-[8.5px] leading-snug text-muted">
-          A small team building clean, fast, reliable software for small
-          businesses.
-        </span>
-        <span className="mt-4 block rounded-full bg-signal py-2 text-center text-[9px] font-semibold text-signal-ink">
-          Book a free call
-        </span>
-        <span className="mt-2 block rounded-full border border-hair py-2 text-center text-[9px] font-medium text-foreground">
-          See our services
-        </span>
-        <span className="mt-7 block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
-          Services
-        </span>
-        <span className="mt-1 block text-[14px] font-bold text-foreground">
-          What we can build
-        </span>
-        <span className="mt-3 grid gap-2">
-          {services.map((s) => (
-            <MiniCard key={s.title} {...s} />
-          ))}
-        </span>
+    <div ref={viewRef} className="relative min-h-0 flex-1 overflow-hidden">
+      <div
+        ref={contentRef}
+        className={active ? "dv-scroll" : undefined}
+        style={{ "--dv-dist": `-${dist}px`, "--dv-time": `${Math.max(4, dist / 56)}s` }}
+        onAnimationEnd={(event) => {
+          if (event.target === event.currentTarget) onDone?.();
+        }}
+      >
+        {children}
       </div>
     </div>
   );
 }
 
-function LaptopScreen() {
+function PhoneScreen({ active, onDone }) {
   return (
-    <div className="relative h-full w-full overflow-hidden bg-background text-foreground">
-      <div className="flex h-8 items-center justify-between border-b border-hair px-4">
+    <div className="relative flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+      <div className="relative z-10 shrink-0 bg-background">
+        <div className="flex h-9 items-end justify-between px-6 pb-1 text-[9px] font-semibold">
+          <span>9:41</span>
+          <span className="mb-[3px] block h-[6px] w-[14px] rounded-sm bg-foreground/70" />
+        </div>
+        <div className="flex items-center justify-between px-4 py-2">
+          <MiniLogo />
+          <span className="grid gap-[3px]">
+            <span className="block h-px w-3.5 bg-foreground" />
+            <span className="block h-px w-3.5 bg-foreground" />
+          </span>
+        </div>
+      </div>
+      <Scroller active={active} onDone={onDone}>
+        <div className="px-4 pb-6">
+          <span className="mt-3 block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
+            BinDev / software studio
+          </span>
+          <Headline className="mt-2 text-[22px] leading-[1.02]" />
+          <span className="mt-3 block text-[8.5px] leading-snug text-muted">
+            A small team building clean, fast, reliable software for small
+            businesses.
+          </span>
+          <span className="mt-4 block rounded-full bg-signal py-2 text-center text-[9px] font-semibold text-signal-ink">
+            Book a free call
+          </span>
+          <span className="mt-2 block rounded-full border border-hair py-2 text-center text-[9px] font-medium text-foreground">
+            See our services
+          </span>
+          <span className="mt-7 block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
+            Services
+          </span>
+          <span className="mt-1 block text-[14px] font-bold text-foreground">
+            What we can build
+          </span>
+          <span className="mt-3 grid gap-2">
+            {services.map((s) => (
+              <MiniCard key={s.title} {...s} />
+            ))}
+          </span>
+          <span className="mt-7 block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
+            Why BinDev
+          </span>
+          <span className="mt-1 block text-[14px] font-bold text-foreground">
+            Simple, fast, reliable
+          </span>
+          <span className="mt-3 grid gap-2">
+            {reasons.map((s) => (
+              <MiniCard key={s.title} {...s} />
+            ))}
+          </span>
+          <span className="mt-7 block">
+            <MiniCTA small />
+          </span>
+        </div>
+      </Scroller>
+    </div>
+  );
+}
+
+function LaptopScreen({ active, onDone }) {
+  return (
+    <div className="relative flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
+      <div className="relative z-10 flex h-8 shrink-0 items-center justify-between border-b border-hair bg-background px-4">
         <MiniLogo />
         <span className="flex gap-3 text-[7px] text-muted">
           <span>Services</span>
@@ -126,7 +203,7 @@ function LaptopScreen() {
           Book a free call
         </span>
       </div>
-      <div className="dv-scroll" style={{ "--dv-dist": "-115px" }}>
+      <Scroller active={active} onDone={onDone}>
         <div className="grid grid-cols-[1.3fr_1fr] items-center gap-4 px-5 pb-4 pt-6">
           <span className="block">
             <span className="block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
@@ -151,7 +228,7 @@ function LaptopScreen() {
             ))}
           </span>
         </div>
-        <div className="px-5 pb-24">
+        <div className="px-5 pb-5">
           <span className="block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
             Services
           </span>
@@ -163,8 +240,22 @@ function LaptopScreen() {
               <MiniCard key={s.title} {...s} />
             ))}
           </span>
+          <span className="mt-6 block font-mono text-[6px] uppercase tracking-[0.2em] text-muted">
+            Why BinDev
+          </span>
+          <span className="mt-1 block text-[13px] font-bold text-foreground">
+            Simple, fast, reliable
+          </span>
+          <span className="mt-2 grid grid-cols-3 gap-2">
+            {reasons.map((s) => (
+              <MiniCard key={s.title} {...s} />
+            ))}
+          </span>
+          <span className="mt-6 block">
+            <MiniCTA />
+          </span>
         </div>
-      </div>
+      </Scroller>
     </div>
   );
 }
@@ -174,7 +265,7 @@ const glass = {
 };
 const glow = "0 0 70px -25px color-mix(in srgb, var(--signal) 55%, transparent)";
 
-function Phone() {
+function Phone({ active, onDone }) {
   return (
     <div className="relative h-[520px] w-[250px]" style={{ transformStyle: "preserve-3d" }}>
       <span
@@ -186,9 +277,9 @@ function Phone() {
         style={{ boxShadow: `0 30px 60px -20px rgba(0,0,0,0.6), ${glow}` }}
       >
         <div className="relative h-full w-full overflow-hidden rounded-[30px]">
-          <PhoneScreen />
-          <span className="absolute left-1/2 top-2 h-[20px] w-[70px] -translate-x-1/2 rounded-full bg-black" />
-          <span className="pointer-events-none absolute inset-0" style={glass} />
+          <PhoneScreen active={active} onDone={onDone} />
+          <span className="absolute left-1/2 top-2 z-20 h-[20px] w-[70px] -translate-x-1/2 rounded-full bg-black" />
+          <span className="pointer-events-none absolute inset-0 z-20" style={glass} />
         </div>
       </div>
       <span className="absolute -right-[3px] top-28 h-14 w-[3px] rounded bg-[#1b212b]" />
@@ -198,7 +289,7 @@ function Phone() {
   );
 }
 
-function Laptop() {
+function Laptop({ active, onDone }) {
   return (
     <div className="relative w-[440px]" style={{ transformStyle: "preserve-3d" }}>
       <div
@@ -206,8 +297,8 @@ function Laptop() {
         style={{ boxShadow: `0 30px 60px -20px rgba(0,0,0,0.6), ${glow}` }}
       >
         <div className="relative h-[270px] overflow-hidden rounded-[6px]">
-          <LaptopScreen />
-          <span className="pointer-events-none absolute inset-0" style={glass} />
+          <LaptopScreen active={active} onDone={onDone} />
+          <span className="pointer-events-none absolute inset-0 z-20" style={glass} />
         </div>
       </div>
       <div
@@ -224,10 +315,12 @@ const slot =
   "absolute inset-0 grid place-items-center transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] motion-reduce:transition-none";
 
 export default function DeviceShowcase() {
-  const [mode, setMode] = useState("phone"); // phone | laptop
+  const [mode, setMode] = useState("phone"); // phone | laptop (the one on show)
+  const [scrolling, setScrolling] = useState("phone"); // the one whose page is scrolling
   const [visible, setVisible] = useState(false);
   const rootRef = useRef(null);
   const tiltRef = useRef(null);
+  const holdRef = useRef(null);
 
   const reduced = useSyncExternalStore(
     subscribeReduced,
@@ -235,7 +328,7 @@ export default function DeviceShowcase() {
     () => false
   );
 
-  // Only run while on screen (the whole thing is display:none under 1280px).
+  // Pause the animations while off screen (it is display:none under 1280px).
   useEffect(() => {
     const element = rootRef.current;
     if (!element || typeof IntersectionObserver === "undefined") return;
@@ -247,15 +340,23 @@ export default function DeviceShowcase() {
     return () => observer.disconnect();
   }, []);
 
-  // Flip every SWITCH_MS. Picking a device with the buttons restarts the wait.
+  // The new device starts scrolling once the flip is (almost) done. The old
+  // one keeps its end position until it has faded out, so it never jumps.
   useEffect(() => {
-    if (reduced || !visible) return;
-    const timer = setTimeout(
-      () => setMode((current) => (current === "phone" ? "laptop" : "phone")),
-      SWITCH_MS
-    );
+    const timer = setTimeout(() => setScrolling(mode), 1000);
     return () => clearTimeout(timer);
-  }, [mode, reduced, visible]);
+  }, [mode]);
+
+  useEffect(() => () => clearTimeout(holdRef.current), []);
+
+  // A page reached its very end: wait a moment, then flip to the other device.
+  function handleDone() {
+    clearTimeout(holdRef.current);
+    holdRef.current = setTimeout(
+      () => setMode((current) => (current === "phone" ? "laptop" : "phone")),
+      HOLD_MS
+    );
+  }
 
   function handleMove(event) {
     if (reduced || !tiltRef.current) return;
@@ -275,11 +376,15 @@ export default function DeviceShowcase() {
   const isPhone = mode === "phone";
 
   return (
-    <div ref={rootRef} className="dv-root relative mx-auto w-[500px]" data-paused={!visible}>
+    <div
+      ref={rootRef}
+      aria-hidden="true"
+      className="dv-root relative ml-auto w-[500px] translate-x-4 min-[1440px]:translate-x-10 2xl:translate-x-20"
+      data-paused={!visible}
+    >
       <style>{css}</style>
 
       <div
-        aria-hidden="true"
         className="relative h-[540px] w-full"
         style={{ perspective: "1400px" }}
         onMouseMove={handleMove}
@@ -305,7 +410,7 @@ export default function DeviceShowcase() {
                 opacity: isPhone ? 1 : 0,
               }}
             >
-              <Phone />
+              <Phone active={scrolling === "phone"} onDone={handleDone} />
             </div>
             <div
               className={slot}
@@ -315,31 +420,10 @@ export default function DeviceShowcase() {
                 opacity: isPhone ? 0 : 1,
               }}
             >
-              <Laptop />
+              <Laptop active={scrolling === "laptop"} onDone={handleDone} />
             </div>
           </div>
         </div>
-      </div>
-
-      <div role="group" aria-label="Preview device" className="mt-2 flex justify-center gap-2">
-        {[
-          { id: "phone", label: "Phone" },
-          { id: "laptop", label: "Desktop" },
-        ].map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            aria-pressed={mode === item.id}
-            onClick={() => setMode(item.id)}
-            className={`rounded-full border px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] transition ${
-              mode === item.id
-                ? "border-signal bg-signal text-signal-ink"
-                : "border-hair bg-surface text-muted hover:text-foreground"
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
       </div>
     </div>
   );
