@@ -4,7 +4,7 @@ import Reveal from "@/components/ui/Reveal";
 
 export default function Hero() {
   return (
-    <section className="relative -mt-20 overflow-hidden bg-background text-foreground">
+    <section className="relative -mt-20 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-background text-foreground">
       {/* Technical grid */}
       <div
         aria-hidden="true"
@@ -22,7 +22,7 @@ export default function Hero() {
         style={{ background: "radial-gradient(circle, var(--signal) 0%, transparent 70%)" }}
       />
 
-      <Container className="relative pb-20 pt-40 sm:pb-28 sm:pt-48 lg:pb-36 lg:pt-56">
+      <Container className="relative pb-16 pt-32 sm:pb-20 sm:pt-36">
         <Reveal delay={0}>
           <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted">
             BinDev / software studio
@@ -30,13 +30,13 @@ export default function Hero() {
         </Reveal>
 
         <Reveal delay={120}>
-          <h1 className="mt-6 max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="mt-6 max-w-4xl text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
             Websites and web apps that run your business.
           </h1>
         </Reveal>
 
         <Reveal delay={240}>
-          <p className="mt-6 max-w-xl text-lg text-muted">
+          <p className="mt-8 max-w-2xl text-lg text-muted sm:text-xl">
             A small team building clean, fast, reliable software for small
             businesses, from a simple site to a system made just for you.
           </p>

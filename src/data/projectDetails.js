@@ -1,3 +1,5 @@
+import { quest2goImages } from "@/data/quest2goImages";
+
 // Case study content. Add new entries here as real projects are confirmed.
 export const projectDetails = [
   {
@@ -14,7 +16,8 @@ export const projectDetails = [
     ],
     result: "Result and outcomes to be added once metrics are confirmed.",
     stack: ["Next.js", "phpMyAdmin", "SQL"],
-    image: null, // TODO: screenshot at /projects/quest2go.jpg
+    image: null,
+    images: quest2goImages, // screenshots that fade in and out (data/quest2goImages.js)
     url: null, // TODO: live site link
   },
   {

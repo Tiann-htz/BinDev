@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
+import ImageFader from "@/components/ui/ImageFader";
 import FinalCTA from "@/components/sections/home/FinalCTA";
 
 // One case study page. `project` is an entry from data/projectDetails.js.
@@ -34,19 +35,32 @@ export default function CaseStudy({ project }) {
         </Container>
       </section>
 
-      {project.image && (
+      {(project.images?.length > 0 || project.image) && (
         <section className="bg-background pb-16 text-foreground">
           <Container>
             <Reveal>
-              <div className="overflow-hidden rounded-2xl border border-hair bg-surface">
-                <Image
-                  src={project.image}
-                  alt={`${project.title} screenshot`}
-                  width={1600}
-                  height={1000}
-                  className="h-auto w-full"
-                />
-              </div>
+              {project.images?.length > 0 ? (
+                // Several screenshots fading one after another. The box keeps
+                // the same shape as a single screenshot (about 2:1).
+                <div className="relative aspect-[1900/940] overflow-hidden rounded-2xl border border-hair bg-surface">
+                  <ImageFader
+                    images={project.images}
+                    alt={`${project.title} screenshot`}
+                    sizes="(min-width: 1280px) 1200px, 100vw"
+                    priority
+                  />
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-2xl border border-hair bg-surface">
+                  <Image
+                    src={project.image}
+                    alt={`${project.title} screenshot`}
+                    width={1600}
+                    height={1000}
+                    className="h-auto w-full"
+                  />
+                </div>
+              )}
             </Reveal>
           </Container>
         </section>

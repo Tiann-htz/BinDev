@@ -2,6 +2,7 @@ import Image from "next/image";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
+import ImageFader from "@/components/ui/ImageFader";
 import Link from "next/link";
 import { projects } from "@/data/projects";
 import { projectDetails } from "@/data/projectDetails";
@@ -15,6 +16,17 @@ const featuredProjects = projects.filter(
 );
 
 function ProjectImage({ project }) {
+  // Several screenshots: fade one after another inside the same box
+  if (project.images?.length > 0) {
+    return (
+      <ImageFader
+        images={project.images}
+        alt={`${project.title} screenshot`}
+        sizes="(min-width: 1280px) 1200px, 100vw"
+      />
+    );
+  }
+
   if (project.image) {
     return (
       <Image

@@ -1,3 +1,5 @@
+import { quest2goImages } from "@/data/quest2goImages";
+
 // Content for the featured projects on the Home page. Edit the text here.
 //
 // image: path inside /public (example: "/projects/quest2go.jpg"). Leave null to
@@ -12,7 +14,8 @@ export const projects = [
     description:
       "A Davao City platform for unpublished research studies. Students, teachers, and researchers can search and request academic research, with dashboards and a mobile-friendly design.",
     stack: ["Next.js", "phpMyAdmin", "SQL"],
-    image: null, // TODO: add screenshot, e.g. "/projects/quest2go.jpg"
+    image: null,
+    images: quest2goImages, // screenshots that fade in and out (data/quest2goImages.js)
     url: null, // TODO: add the live site link
   },
   // Hidden on the live site until real projects replace them.

@@ -12,6 +12,7 @@
   --signal: #B8FF3D;
   --signal-ink: #0B0F14;
   --muted: #9BA6B5;
+  --danger: #FF6B6B;
   color-scheme: dark;
 }
 
@@ -25,6 +26,7 @@
   --signal: #4D7C0F;
   --signal-ink: #FFFFFF;
   --muted: #4B5666;
+  --danger: #C62828;
   color-scheme: light;
 }
 
@@ -36,6 +38,7 @@
   --color-signal: var(--signal);
   --color-signal-ink: var(--signal-ink);
   --color-muted: var(--muted);
+  --color-danger: var(--danger);
   --color-navy: var(--background);
   --color-brand: var(--signal);
   --color-brand-dark: #7BCF1F;

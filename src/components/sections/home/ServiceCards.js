@@ -50,7 +50,10 @@ export default function ServiceCards() {
     <section className="border-t border-hair bg-background text-foreground">
       <Container className="py-20 sm:py-28">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted">
+            Services
+          </p>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
             What we can build
           </h2>
           <p className="mt-4 text-lg text-muted">
@@ -58,14 +61,8 @@ export default function ServiceCards() {
           </p>
         </div>
 
-        <Reveal delay={120} className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-flow-dense lg:grid-cols-6">
+        <Reveal delay={120} className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
           {services.map((service, i) => {
-            const span =
-              i === 0
-                ? "md:col-span-2 lg:col-span-4 lg:row-span-2"
-                : i === 1
-                ? "lg:col-span-2"
-                : "lg:col-span-2";
             const tone =
               i === 0
                 ? "bg-[radial-gradient(80%_80%_at_0%_0%,color-mix(in_srgb,var(--signal)_12%,transparent),transparent)]"
@@ -74,7 +71,7 @@ export default function ServiceCards() {
               <Link
                 key={service.slug}
                 href={service.href}
-                className={`group flex min-w-0 flex-col rounded-2xl border border-hair ${span} ${tone} p-6 transition hover:border-signal/40`}
+                className={`group flex min-w-0 flex-col rounded-2xl border border-hair ${tone} p-6 transition hover:border-signal/40`}
               >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-signal/10 text-signal">
