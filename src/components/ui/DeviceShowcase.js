@@ -13,6 +13,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 const HOLD_MS = 900; // pause at the end of the scroll before flipping
+const INTRO_MS = 2000; // the one-time spin-in on page load (500ms wait + 1500ms)
 
 function subscribeReduced(callback) {
   const query = window.matchMedia(REDUCED);
@@ -25,9 +26,16 @@ const css = `
 @keyframes dv-scroll { from { transform: translateY(0); } to { transform: translateY(var(--dv-dist, 0px)); } }
 .dv-float { animation: dv-float 5s ease-in-out infinite alternate; }
 .dv-scroll { animation: dv-scroll var(--dv-time, 8s) ease-in-out 0.4s 1 forwards; }
+@keyframes dv-intro {
+  0% { opacity: 0; transform: translateX(110px) rotateY(85deg) scale(0.88); }
+  35% { opacity: 1; }
+  100% { opacity: 1; transform: translateX(0) rotateY(0deg) scale(1); }
+}
+.dv-intro { animation: dv-intro 1500ms cubic-bezier(0.22, 1, 0.36, 1) 500ms 1 backwards; }
 .dv-root[data-paused="true"] .dv-float,
+.dv-root[data-paused="true"] .dv-intro,
 .dv-root[data-paused="true"] .dv-scroll { animation-play-state: paused; }
-@media (prefers-reduced-motion: reduce) { .dv-float, .dv-scroll { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .dv-float, .dv-scroll, .dv-intro { animation: none; } }
 `;
 
 const services = [
@@ -316,11 +324,12 @@ const slot =
 
 export default function DeviceShowcase() {
   const [mode, setMode] = useState("phone"); // phone | laptop (the one on show)
-  const [scrolling, setScrolling] = useState("phone"); // the one whose page is scrolling
+  const [scrolling, setScrolling] = useState(null); // the one whose page is scrolling
   const [visible, setVisible] = useState(false);
   const rootRef = useRef(null);
   const tiltRef = useRef(null);
   const holdRef = useRef(null);
+  const mountRef = useRef(0);
 
   const reduced = useSyncExternalStore(
     subscribeReduced,
@@ -342,8 +351,12 @@ export default function DeviceShowcase() {
 
   // The new device starts scrolling once the flip is (almost) done. The old
   // one keeps its end position until it has faded out, so it never jumps.
+  // On page load it waits for the spin-in to finish first.
   useEffect(() => {
-    const timer = setTimeout(() => setScrolling(mode), 1000);
+    if (!mountRef.current) mountRef.current = performance.now();
+    const sinceMount = performance.now() - mountRef.current;
+    const wait = Math.max(1000, INTRO_MS - sinceMount);
+    const timer = setTimeout(() => setScrolling(mode), wait);
     return () => clearTimeout(timer);
   }, [mode]);
 
@@ -392,6 +405,8 @@ export default function DeviceShowcase() {
       >
         {/* ground shadow */}
         <span className="absolute bottom-[34px] left-1/2 h-8 w-[300px] -translate-x-1/2 rounded-full bg-black/50 blur-2xl" />
+        {/* One-time spin-in when the site loads (does not replay on flips) */}
+        <div className="dv-intro absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
         <div
           ref={tiltRef}
           className="absolute inset-0"
@@ -423,6 +438,7 @@ export default function DeviceShowcase() {
               <Laptop active={scrolling === "laptop"} onDone={handleDone} />
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
