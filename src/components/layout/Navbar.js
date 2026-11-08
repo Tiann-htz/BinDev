@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
@@ -16,13 +17,16 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href) =>
+    pathname === href || pathname.startsWith(href + "/");
 
   return (
     <header className="sticky top-0 z-40 h-20 w-full pt-6">
       {/* Header is 80px tall (h-20 = 24px top gap + 56px bar). The Hero pulls
           itself up by the same 80px (-mt-20) so its background reaches the top
           of the page. If you change this height, change the Hero too. */}
-      <Container className="flex h-14 items-center justify-between rounded-full border border-hair bg-surface/60 px-6 backdrop-blur-xl">
+      <Container className="glow-border flex h-14 items-center justify-between rounded-full border border-hair bg-surface/60 px-6 backdrop-blur-xl">
         {/* Logo: mark on the left, BinDev wordmark right next to it.
             Images are trimmed copies in /public/brand (made from logo1.png and
             textlogo.png). Sizes: mark h-9 (36px), wordmark h-5 (20px), gap-2.5. */}
@@ -55,7 +59,11 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted transition hover:text-foreground"
+              className={`no-glow text-sm font-medium transition ${
+                isActive(link.href)
+                  ? "text-signal"
+                  : "text-muted hover:text-signal"
+              }`}
             >
               {link.label}
             </Link>
@@ -67,7 +75,7 @@ export default function Navbar() {
           <ThemeToggle />
 
           <div className="hidden md:block">
-            <Button href="/contact" size="md">
+            <Button href="/contact" size="md" className="no-glow">
               Book a free call
             </Button>
           </div>
@@ -77,7 +85,7 @@ export default function Navbar() {
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground md:hidden"
+            className="no-glow inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground md:hidden"
           >
             <svg
               width="22"
@@ -105,12 +113,16 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="rounded-md px-2 py-3 text-base font-medium text-foreground/90 hover:bg-surface hover:text-signal"
+              className={`no-glow rounded-md px-2 py-3 text-base font-medium ${
+                isActive(link.href)
+                  ? "bg-surface text-signal"
+                  : "text-foreground/90 hover:bg-surface hover:text-signal"
+              }`}
             >
               {link.label}
             </Link>
           ))}
-          <Button href="/contact" onClick={() => setOpen(false)} className="mt-3">
+          <Button href="/contact" onClick={() => setOpen(false)} className="mt-3 no-glow">
             Book a free call
           </Button>
         </Container>

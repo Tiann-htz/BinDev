@@ -56,6 +56,7 @@ export default function ThemeToggle({ className = "" }) {
     <button
       type="button"
       onClick={toggle}
+      suppressHydrationWarning
       aria-label={label}
       title={label}
       className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-hair text-foreground transition-colors duration-300 hover:border-foreground/40 hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${className}`}

@@ -1,15 +1,16 @@
 import Link from "next/link";
+import Magnetic from "@/components/ui/Magnetic";
 
 const base =
   "group inline-flex items-center justify-between gap-3 rounded-full font-semibold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal active:scale-[0.98]";
 
 const variants = {
   primary:
-    "bg-signal text-signal-ink shadow-[0_0_24px_color-mix(in_srgb,var(--signal)_25%,transparent)] hover:shadow-[0_0_32px_color-mix(in_srgb,var(--signal)_40%,transparent)]",
+    "bg-signal text-signal-ink shadow-[0_0_24px_color-mix(in_srgb,var(--signal)_25%,transparent)] hover:shadow-[0_0_36px_color-mix(in_srgb,var(--signal)_45%,transparent)] hover:bg-[color-mix(in_srgb,var(--signal)_92%,white)]",
   outline:
-    "border border-hair text-foreground hover:border-foreground/40 hover:bg-surface",
-  dark: "bg-surface text-foreground border border-hair hover:bg-surface/80",
-  light: "border border-hair text-foreground hover:bg-surface",
+    "border border-hair text-foreground hover:border-signal hover:bg-signal/10 hover:text-signal",
+  dark: "bg-surface text-foreground border border-hair hover:border-signal hover:bg-signal/5 hover:text-signal",
+  light: "border border-hair text-foreground hover:border-signal hover:bg-signal/10 hover:text-signal",
 };
 
 const sizes = {
@@ -48,18 +49,20 @@ export default function Button({
   const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`.trim();
 
   if (href) {
-    return (
+    const link = (
       <Link href={href} className={classes} {...props}>
         <span>{children}</span>
         <TrailingIcon />
       </Link>
     );
+    return variant === "primary" ? <Magnetic>{link}</Magnetic> : link;
   }
 
-  return (
+  const button = (
     <button type="button" className={classes} {...props}>
       <span>{children}</span>
       <TrailingIcon />
     </button>
   );
+  return variant === "primary" ? <Magnetic>{button}</Magnetic> : button;
 }

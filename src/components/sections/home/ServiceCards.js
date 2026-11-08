@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
+import SpotlightCard from "@/components/ui/SpotlightCard";
 import { services } from "@/data/services";
 
 const icons = {
@@ -71,11 +72,11 @@ export default function ServiceCards() {
                 ? "bg-[radial-gradient(80%_80%_at_0%_0%,color-mix(in_srgb,var(--signal)_12%,transparent),transparent)]"
                 : "bg-surface";
             return (
-              <Link
-                key={service.slug}
-                href={service.href}
-                className={`group flex min-w-0 flex-col rounded-2xl border border-hair ${span} ${tone} p-6 transition hover:border-signal/40`}
-              >
+              <SpotlightCard key={service.slug} className="rounded-2xl">
+                <Link
+                  href={service.href}
+                  className={`group flex min-w-0 flex-col rounded-2xl border border-hair ${span} ${tone} p-6 transition hover:border-signal/40`}
+                >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-signal/10 text-signal">
                     <Icon name={service.icon} />
@@ -97,6 +98,7 @@ export default function ServiceCards() {
                   </span>
                 </div>
               </Link>
+              </SpotlightCard>
             );
           })}
         </Reveal>
