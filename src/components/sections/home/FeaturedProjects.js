@@ -4,6 +4,7 @@ import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
 import ImageFader from "@/components/ui/ImageFader";
 import Link from "next/link";
+import SpotlightCard from "@/components/ui/SpotlightCard";
 import { projects } from "@/data/projects";
 import { projectDetails } from "@/data/projectDetails";
 
@@ -73,59 +74,57 @@ export default function FeaturedProjects() {
             : "md:grid-cols-2 lg:grid-cols-3"
         }`}>
           {featuredProjects.map((project) => (
-            <article
-              key={project.slug}
-              className="flex flex-col overflow-hidden rounded-2xl border border-hair bg-surface"
-            >
-              <div className="aspect-[16/10] overflow-hidden border-b border-hair bg-surface">
-                <ProjectImage project={project} />
-              </div>
+            <SpotlightCard key={project.slug} className="rounded-2xl overflow-hidden">
+              <article className="flex flex-col overflow-hidden rounded-2xl border border-hair bg-surface">
+                <div className="aspect-[16/10] overflow-hidden border-b border-hair bg-surface grayscale transition-[filter] duration-500 group-hover/spot:grayscale-0">
+                  <ProjectImage project={project} />
+                </div>
 
-              <div className="flex flex-1 flex-col p-6">
-                <p className="text-xs font-medium uppercase tracking-wide text-signal">
-                  {project.category}
-                </p>
-                <h3 className="mt-2 text-xl font-semibold">{project.title}</h3>
-                <p className="mt-3 flex-1 text-muted">
-                  {project.description}
-                </p>
+                <div className="flex flex-1 flex-col p-6">
+                  <p className="text-xs font-medium uppercase tracking-wide text-signal">
+                    {project.category}
+                  </p>
+                  <h3 className="mt-2 text-xl font-semibold">{project.title}</h3>
+                  <p className="mt-3 flex-1 text-muted">
+                    {project.description}
+                  </p>
 
-                <ul className="mt-5 flex flex-wrap gap-2">
-                  {project.stack.map((tech) => (
-                    <li
-                      key={tech}
-                      className="rounded-md bg-foreground/10 px-2.5 py-1 text-xs font-medium text-foreground/80"
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {project.stack.map((tech) => (
+                      <li
+                        key={tech}
+                        className="rounded-md bg-foreground/10 px-2.5 py-1 text-xs font-medium text-foreground/80"
+                      >
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {hasCaseStudy(project.slug) && (
+                    <Link
+                      href={`/work/${project.slug}`}
+                      className="mt-6 text-sm font-medium text-signal hover:underline"
                     >
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
+                      Read the case study &rarr;
+                    </Link>
+                  )}
 
-                {hasCaseStudy(project.slug) && (
-                  <Link
-                    href={`/work/${project.slug}`}
-                    className="mt-6 text-sm font-medium text-signal hover:underline"
-                  >
-                    Read the case study &rarr;
-                  </Link>
-                )}
-
-                {project.url && (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 text-sm font-medium text-signal hover:underline"
-                  >
-                    Visit site &rarr;
-                  </a>
-                )}
-              </div>
-            </article>
+                  {project.url && (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 text-sm font-medium text-signal hover:underline"
+                    >
+                      Visit site &rarr;
+                    </a>
+                  )}
+                </div>
+              </article>
+            </SpotlightCard>
           ))}
         </Reveal>
       </Container>
     </section>
   );
 }
-

@@ -5,6 +5,10 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SignalCursor from "@/components/ui/SignalCursor";
 import AmbientBackground from "@/components/ui/AmbientBackground";
+import ScrollProgress from "@/components/ui/ScrollProgress";
+import SmoothScroll from "@/components/ui/SmoothScroll";
+import Intro from "@/components/ui/Intro";
+import GlobalGlow from "@/components/ui/GlobalGlow";
 import { site } from "@/data/site";
 
 const bricolage = Bricolage_Grotesque({
@@ -82,6 +86,8 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <AmbientBackground />
+        <Intro />
+        <GlobalGlow />
         <SignalCursor />
         <script
           type="application/ld+json"
@@ -89,9 +95,12 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c"),
           }}
         />
-        <Navbar />
-        <div className="flex-1">{children}</div>
-        <Footer />
+        <SmoothScroll>
+          <Navbar />
+          <div className="flex-1">{children}</div>
+          <Footer />
+        </SmoothScroll>
+        <ScrollProgress />
         <Analytics />
       </body>
     </html>

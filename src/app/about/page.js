@@ -1,5 +1,6 @@
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
+import Counter from "@/components/ui/Counter";
 import FinalCTA from "@/components/sections/home/FinalCTA";
 import { team } from "@/data/team";
 import Image from "next/image";
@@ -61,6 +62,30 @@ export default function AboutPage() {
               abroad. We work remotely, communicate clearly, and keep pricing
               simple.
             </p>
+          </Reveal>
+        </Container>
+      </section>
+
+      <section className="border-t border-hair bg-background py-16 text-foreground">
+        <Container>
+          <Reveal>
+            <div className="grid gap-6 sm:grid-cols-3">
+              {[
+                { value: 175, prefix: "$", label: "Starter site from" },
+                { value: 7, suffix: " days", label: "Typical delivery" },
+                { value: 24, suffix: "h", label: "Reply time" },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-2xl border border-hair bg-surface p-6"
+                >
+                  <p className="font-mono text-3xl font-bold text-signal">
+                    <Counter value={stat.value} prefix={stat.prefix || ""} suffix={stat.suffix || ""} />
+                  </p>
+                  <p className="mt-2 text-sm text-muted">{stat.label}</p>
+                </div>
+              ))}
+            </div>
           </Reveal>
         </Container>
       </section>

@@ -1,5 +1,6 @@
 import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
+import SpotlightCard from "@/components/ui/SpotlightCard";
 import { processSteps } from "@/data/process";
 
 export default function Process() {
@@ -17,7 +18,8 @@ export default function Process() {
 
         <Reveal delay={120} as="ol" className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {processSteps.map((step, index) => (
-            <li
+            <SpotlightCard
+              as="li"
               key={step.title}
               className="rounded-2xl border border-hair bg-surface p-6"
             >
@@ -26,7 +28,7 @@ export default function Process() {
               </span>
               <h3 className="mt-5 text-lg font-semibold">{step.title}</h3>
               <p className="mt-3 text-foreground/75">{step.description}</p>
-            </li>
+            </SpotlightCard>
           ))}
         </Reveal>
       </Container>

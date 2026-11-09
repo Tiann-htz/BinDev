@@ -13,7 +13,6 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 const HOLD_MS = 900; // pause at the end of the scroll before flipping
-const INTRO_MS = 1200; // the one-time reveal on page load (500ms wait + 700ms)
 
 function subscribeReduced(callback) {
   const query = window.matchMedia(REDUCED);
@@ -26,15 +25,9 @@ const css = `
 @keyframes dv-scroll { from { transform: translateY(0); } to { transform: translateY(var(--dv-dist, 0px)); } }
 .dv-float { animation: dv-float 5s ease-in-out infinite alternate; }
 .dv-scroll { animation: dv-scroll var(--dv-time, 8s) ease-in-out 0.4s 1 forwards; }
-@keyframes dv-intro {
-  from { opacity: 0; transform: translateY(24px); filter: blur(8px); }
-  to { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-.dv-intro { animation: dv-intro 700ms cubic-bezier(0.16, 1, 0.3, 1) 500ms 1 backwards; }
 .dv-root[data-paused="true"] .dv-float,
-.dv-root[data-paused="true"] .dv-intro,
 .dv-root[data-paused="true"] .dv-scroll { animation-play-state: paused; }
-@media (prefers-reduced-motion: reduce) { .dv-float, .dv-scroll, .dv-intro { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .dv-float, .dv-scroll { animation: none; } }
 `;
 
 const services = [
@@ -323,12 +316,11 @@ const slot =
 
 export default function DeviceShowcase() {
   const [mode, setMode] = useState("phone"); // phone | laptop (the one on show)
-  const [scrolling, setScrolling] = useState(null); // the one whose page is scrolling
+  const [scrolling, setScrolling] = useState("phone"); // the one whose page is scrolling
   const [visible, setVisible] = useState(false);
   const rootRef = useRef(null);
   const tiltRef = useRef(null);
   const holdRef = useRef(null);
-  const mountRef = useRef(0);
 
   const reduced = useSyncExternalStore(
     subscribeReduced,
@@ -350,12 +342,8 @@ export default function DeviceShowcase() {
 
   // The new device starts scrolling once the flip is (almost) done. The old
   // one keeps its end position until it has faded out, so it never jumps.
-  // On page load it waits for the spin-in to finish first.
   useEffect(() => {
-    if (!mountRef.current) mountRef.current = performance.now();
-    const sinceMount = performance.now() - mountRef.current;
-    const wait = Math.max(1000, INTRO_MS - sinceMount);
-    const timer = setTimeout(() => setScrolling(mode), wait);
+    const timer = setTimeout(() => setScrolling(mode), 1000);
     return () => clearTimeout(timer);
   }, [mode]);
 
@@ -396,10 +384,6 @@ export default function DeviceShowcase() {
     >
       <style>{css}</style>
 
-      {/* One-time reveal on page load. It sits OUTSIDE the perspective box, so the
-          3D (facing, thickness) is drawn first and only the finished picture is
-          blurred/faded. Putting filter/opacity inside would flatten the 3D. */}
-      <div className="dv-intro">
       <div
         className="relative h-[540px] w-full"
         style={{ perspective: "1400px" }}
@@ -440,7 +424,6 @@ export default function DeviceShowcase() {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );
