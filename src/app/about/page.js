@@ -2,16 +2,13 @@ import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import Counter from "@/components/ui/Counter";
 import FinalCTA from "@/components/sections/home/FinalCTA";
-import { team } from "@/data/team";
-import Image from "next/image";
+import Team from "@/components/sections/about/Team";
 
 export const metadata = {
   title: "About",
   description:
     "A small team in Davao building software for businesses anywhere.",
 };
-
-const publishedTeam = team.filter((member) => member.published);
 
 const values = [
   "Clear scope and clear prices",
@@ -107,37 +104,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {publishedTeam.length > 0 && (
-        <section className="border-t border-hair bg-background py-16 text-foreground">
-          <Container>
-            <Reveal>
-              <h2 className="text-2xl font-bold tracking-tight">Team</h2>
-            </Reveal>
-            <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {publishedTeam.map((member, index) => (
-                <Reveal key={member.name} delay={index * 80}>
-                  <div className="rounded-2xl border border-hair bg-surface p-6">
-                    {member.image && (
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        width={96}
-                        height={96}
-                        className="h-16 w-16 rounded-2xl object-cover"
-                      />
-                    )}
-                    <h3 className="mt-4 text-lg font-semibold">{member.name}</h3>
-                    <p className="mt-1 font-mono text-xs uppercase tracking-wide text-signal">
-                      {member.role}
-                    </p>
-                    <p className="mt-3 text-muted">{member.line}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </Container>
-        </section>
-      )}
+      <Team />
 
       <section className="border-t border-hair bg-background py-16 text-foreground">
         <Container>
