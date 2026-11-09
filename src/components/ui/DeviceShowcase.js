@@ -13,7 +13,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 const HOLD_MS = 900; // pause at the end of the scroll before flipping
-const INTRO_MS = 2000; // the one-time spin-in on page load (500ms wait + 1500ms)
+const INTRO_MS = 1200; // the one-time reveal on page load (500ms wait + 700ms)
 
 function subscribeReduced(callback) {
   const query = window.matchMedia(REDUCED);
@@ -27,11 +27,10 @@ const css = `
 .dv-float { animation: dv-float 5s ease-in-out infinite alternate; }
 .dv-scroll { animation: dv-scroll var(--dv-time, 8s) ease-in-out 0.4s 1 forwards; }
 @keyframes dv-intro {
-  0% { opacity: 0; transform: translateX(110px) rotateY(85deg) scale(0.88); }
-  35% { opacity: 1; }
-  100% { opacity: 1; transform: translateX(0) rotateY(0deg) scale(1); }
+  from { opacity: 0; transform: translateY(24px); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
-.dv-intro { animation: dv-intro 1500ms cubic-bezier(0.22, 1, 0.36, 1) 500ms 1 backwards; }
+.dv-intro { animation: dv-intro 700ms cubic-bezier(0.16, 1, 0.3, 1) 500ms 1 backwards; }
 .dv-root[data-paused="true"] .dv-float,
 .dv-root[data-paused="true"] .dv-intro,
 .dv-root[data-paused="true"] .dv-scroll { animation-play-state: paused; }
@@ -397,6 +396,10 @@ export default function DeviceShowcase() {
     >
       <style>{css}</style>
 
+      {/* One-time reveal on page load. It sits OUTSIDE the perspective box, so the
+          3D (facing, thickness) is drawn first and only the finished picture is
+          blurred/faded. Putting filter/opacity inside would flatten the 3D. */}
+      <div className="dv-intro">
       <div
         className="relative h-[540px] w-full"
         style={{ perspective: "1400px" }}
@@ -405,8 +408,6 @@ export default function DeviceShowcase() {
       >
         {/* ground shadow */}
         <span className="absolute bottom-[34px] left-1/2 h-8 w-[300px] -translate-x-1/2 rounded-full bg-black/50 blur-2xl" />
-        {/* One-time spin-in when the site loads (does not replay on flips) */}
-        <div className="dv-intro absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
         <div
           ref={tiltRef}
           className="absolute inset-0"
@@ -439,7 +440,7 @@ export default function DeviceShowcase() {
             </div>
           </div>
         </div>
-        </div>
+      </div>
       </div>
     </div>
   );
