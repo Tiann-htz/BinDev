@@ -13,6 +13,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 const HOLD_MS = 900; // pause at the end of the scroll before flipping
+const INTRO_DELAY_MS = 560; // intro starts after the Hero text Reveals
 
 function subscribeReduced(callback) {
   const query = window.matchMedia(REDUCED);
@@ -318,6 +319,7 @@ export default function DeviceShowcase() {
   const [mode, setMode] = useState("phone"); // phone | laptop (the one on show)
   const [scrolling, setScrolling] = useState("phone"); // the one whose page is scrolling
   const [visible, setVisible] = useState(false);
+  const [entered, setEntered] = useState(false); // intro fade + rise has played
   const rootRef = useRef(null);
   const tiltRef = useRef(null);
   const holdRef = useRef(null);
@@ -339,6 +341,14 @@ export default function DeviceShowcase() {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
+
+  // Intro: fade + rise like <Reveal>, a beat after the Hero text (its last
+  // Reveal is at 460ms). The pages only start scrolling once this has fired.
+  useEffect(() => {
+    if (!visible || entered) return;
+    const timer = setTimeout(() => setEntered(true), INTRO_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [visible, entered]);
 
   // The new device starts scrolling once the flip is (almost) done. The old
   // one keeps its end position until it has faded out, so it never jumps.
@@ -385,7 +395,9 @@ export default function DeviceShowcase() {
       <style>{css}</style>
 
       <div
-        className="relative h-[540px] w-full"
+        className={`relative h-[540px] w-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:blur-0 motion-reduce:transition-none ${
+          entered ? "translate-y-0 blur-0 opacity-100" : "translate-y-6 blur-sm opacity-0"
+        }`}
         style={{ perspective: "1400px" }}
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
@@ -410,7 +422,7 @@ export default function DeviceShowcase() {
                 opacity: isPhone ? 1 : 0,
               }}
             >
-              <Phone active={scrolling === "phone"} onDone={handleDone} />
+              <Phone active={entered && scrolling === "phone"} onDone={handleDone} />
             </div>
             <div
               className={slot}
@@ -420,7 +432,7 @@ export default function DeviceShowcase() {
                 opacity: isPhone ? 0 : 1,
               }}
             >
-              <Laptop active={scrolling === "laptop"} onDone={handleDone} />
+              <Laptop active={entered && scrolling === "laptop"} onDone={handleDone} />
             </div>
           </div>
         </div>
