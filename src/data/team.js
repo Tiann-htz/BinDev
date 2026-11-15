@@ -34,7 +34,7 @@ export const team = [
   {
     name: "Glenndely Pikitpikit",
     role: "Graphic Designer",
-    image: null, // TODO: add photo, e.g. "/images/glenndely.jpg"
+    image: "/images/glenndely.jpg",
     published: true,
   },
   {
