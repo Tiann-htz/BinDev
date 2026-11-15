@@ -68,10 +68,28 @@ body {
   display: inline-block;
 }
 
-/* The logo files are lime for the dark theme. In the light theme they are
-   darkened to a deeper green so they stay visible on a light background. */
-:root[data-theme="light"] .logo-adapt {
-  filter: brightness(0.5) saturate(1.6);
+/* Two logo files per logo: the lime one for the dark theme (.logo-dark) and the
+   dark-green one for the light theme (.logo-light). Only one shows at a time. */
+.logo-light {
+  display: none;
+}
+:root[data-theme="light"] .logo-light {
+  display: block;
+}
+:root[data-theme="light"] .logo-dark {
+  display: none;
+}
+
+/* Theme switch: ASCII sweep (see components/ui/themeSweep.js). The browser's
+   own crossfade is turned off, because the sweep moves the new page in itself,
+   and the sweep's canvas (ascii-sweep) stays above everything. */
+::view-transition-old(root),
+::view-transition-new(root),
+::view-transition-group(ascii-sweep),
+::view-transition-old(ascii-sweep),
+::view-transition-new(ascii-sweep) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 /* Smooth color change while switching theme (added for a moment by ThemeToggle) */

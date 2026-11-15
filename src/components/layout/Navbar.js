@@ -42,7 +42,15 @@ export default function Navbar() {
             width={224}
             height={168}
             priority
-            className="logo-adapt h-9 w-auto"
+            className="logo-dark h-9 w-auto"
+          />
+          <Image
+            src="/brand/logo-mark-light.png"
+            alt=""
+            width={1270}
+            height={961}
+            loading="eager"
+            className="logo-light h-9 w-auto"
           />
           <Image
             src="/brand/logo-wordmark.png"
@@ -50,7 +58,15 @@ export default function Navbar() {
             width={526}
             height={84}
             priority
-            className="logo-adapt h-5 w-auto"
+            className="logo-dark h-5 w-auto"
+          />
+          <Image
+            src="/brand/logo-wordmark-light.png"
+            alt="BinDev"
+            width={2134}
+            height={328}
+            loading="eager"
+            className="logo-light h-5 w-auto"
           />
         </Link>
 

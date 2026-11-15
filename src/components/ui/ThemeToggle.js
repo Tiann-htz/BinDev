@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import { runThemeSweep } from "./themeSweep";
 
 const STORAGE_KEY = "bindev-theme";
 const BROWSER_BAR_COLOR = { dark: "#0B0F14", light: "#F6F8FA" };
@@ -40,13 +41,21 @@ export default function ThemeToggle({ className = "" }) {
     const next = theme === "light" ? "dark" : "light";
     const root = document.documentElement;
 
+    const apply = () => {
+      root.setAttribute("data-theme", next);
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        // Private mode: the choice just will not be remembered
+      }
+    };
+
+    // ASCII sweep (see themeSweep.js). If the browser cannot do it, or the
+    // visitor prefers less motion, use the simple color fade instead.
+    if (runThemeSweep(apply)) return;
+
     root.classList.add("theme-transition");
-    root.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // Private mode: the choice just will not be remembered
-    }
+    apply();
     window.setTimeout(() => root.classList.remove("theme-transition"), 450);
   }
 

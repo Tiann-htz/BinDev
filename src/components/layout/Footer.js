@@ -40,14 +40,28 @@ export default function Footer() {
                 alt=""
                 width={224}
                 height={168}
-                className="logo-adapt h-14 w-auto"
+                className="logo-dark h-14 w-auto"
+              />
+              <Image
+                src="/brand/logo-mark-light.png"
+                alt=""
+                width={1270}
+                height={961}
+                className="logo-light h-14 w-auto"
               />
               <Image
                 src="/brand/logo-wordmark.png"
                 alt="BinDev"
                 width={526}
                 height={84}
-                className="logo-adapt h-6 w-auto"
+                className="logo-dark h-6 w-auto"
+              />
+              <Image
+                src="/brand/logo-wordmark-light.png"
+                alt="BinDev"
+                width={2134}
+                height={328}
+                className="logo-light h-6 w-auto"
               />
             </Link>
             <p className="mt-5 max-w-xs text-sm text-muted">
