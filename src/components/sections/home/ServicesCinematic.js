@@ -1,234 +1,104 @@
 ﻿"use client";
 
-import { useEffect, useRef } from "react";
+import { Component, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { services } from "@/data/services";
-import ServicesBackground, { ServicesForeground } from "./ServicesBackground";
 
-// STEP 5: all 3 scenes have samples (website, dashboard, system flow).
+// The 3D stage is heavy, so it loads only in the browser and only when the
+// section is close to the screen.
+const ServicesStage3D = dynamic(() => import("./ServicesStage3D"), { ssr: false });
 
-function WebsiteMockup() {
+// STEP 7: 3D only where it runs well. Reduced motion, no WebGL, weak phones and
+// data saver get a static picture of the devices instead (public/services).
+const POSTERS = ["/services/stage-1.png", "/services/stage-2.png", "/services/stage-3.png"];
+
+function pickMode() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return "static";
+  try {
+    const gl = document.createElement("canvas");
+    const ctx = gl.getContext("webgl2") || gl.getContext("webgl");
+    if (!ctx) return "static";
+    ctx.getExtension("WEBGL_lose_context")?.loseContext(); // give the test context back
+  } catch {
+    return "static";
+  }
+  const weakCpu = navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 2;
+  const weakRam = navigator.deviceMemory > 0 && navigator.deviceMemory <= 2;
+  const saveData = navigator.connection?.saveData === true;
+  return weakCpu || weakRam || saveData ? "static" : "3d";
+}
+
+// if the 3D stage throws for any reason, the page falls back instead of breaking
+class StageBoundary extends Component {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.onError?.();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+// The devices are drawn in 3D by ServicesStage3D. This keeps the space on the
+// right so the layout and the scene timing stay the same, and shows the
+// static picture when 3D is off.
+function Visual({ index, mode }) {
   return (
-    <div
-      data-visual
-      className="mx-auto w-full max-w-[640px] overflow-hidden rounded-2xl border border-hair bg-surface shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
-    >
-      {/* browser bar */}
-      <div className="flex items-center gap-3 border-b border-hair bg-background/60 px-4 py-3">
-        <span className="flex gap-1.5">
-          <i className="h-2.5 w-2.5 rounded-full bg-hair" />
-          <i className="h-2.5 w-2.5 rounded-full bg-hair" />
-          <i className="h-2.5 w-2.5 rounded-full bg-hair" />
-        </span>
-        <span className="flex-1 rounded-full bg-background px-4 py-1 font-mono text-[11px] text-muted">
-          yourbusiness.com
-        </span>
-      </div>
-
-      {/* fake website that "scrolls" inside the frame */}
-      <div className="relative h-[36vh] overflow-hidden sm:h-[48vh]">
-        <div data-page className="space-y-6 p-6">
-          <div data-pop className="flex items-center justify-between">
-            <span className="h-6 w-6 rounded-md bg-signal" />
-            <span className="flex gap-3">
-              <i className="h-2 w-10 rounded bg-hair" />
-              <i className="h-2 w-10 rounded bg-hair" />
-              <i className="h-2 w-10 rounded bg-hair" />
-            </span>
-          </div>
-
-          <div className="space-y-3 pt-4">
-            <div data-pop className="h-5 w-4/5 rounded bg-foreground/80" />
-            <div data-pop className="h-5 w-3/5 rounded bg-foreground/80" />
-            <div data-pop className="h-2.5 w-2/3 rounded bg-hair" />
-            <div data-pop className="h-9 w-32 rounded-full bg-signal" />
-          </div>
-
-          <div
-            data-pop
-            className="h-44 rounded-xl border border-hair bg-[radial-gradient(80%_80%_at_20%_20%,color-mix(in_srgb,var(--signal)_35%,transparent),transparent)]"
-          />
-
-          <div className="grid grid-cols-3 gap-3">
-            {[0, 1, 2].map((n) => (
-              <div
-                key={n}
-                data-pop
-                className="space-y-2 rounded-lg border border-hair bg-background/50 p-3"
-              >
-                <i className="block h-6 w-6 rounded bg-signal/30" />
-                <i className="block h-2 w-3/4 rounded bg-foreground/60" />
-                <i className="block h-2 w-full rounded bg-hair" />
-              </div>
-            ))}
-          </div>
-
-          <div className="space-y-3 pt-4">
-            <div data-pop className="h-4 w-1/2 rounded bg-foreground/70" />
-            <div data-pop className="h-2.5 w-full rounded bg-hair" />
-            <div data-pop className="h-2.5 w-5/6 rounded bg-hair" />
-          </div>
-
-          <div data-pop className="grid grid-cols-2 gap-3">
-            <div className="h-28 rounded-xl border border-hair bg-background/50" />
-            <div className="h-28 rounded-xl border border-hair bg-signal/10" />
-          </div>
-
-          <div data-pop className="flex items-center justify-between rounded-xl bg-signal/90 p-5">
-            <i className="h-3 w-32 rounded bg-background/80" />
-            <i className="h-7 w-24 rounded-full bg-background" />
-          </div>
-
-          <div className="h-10" />
-        </div>
-      </div>
+    <div data-visual aria-hidden="true" className="relative h-[36vh] sm:h-[48vh]">
+      {mode === "static" && (
+        <Image
+          src={POSTERS[index]}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 600px, 100vw"
+          className="object-contain"
+        />
+      )}
     </div>
   );
 }
 
-const frame =
-  "mx-auto w-full max-w-[640px] overflow-hidden rounded-2xl border border-hair bg-surface shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]";
-
-function BrowserBar({ url }) {
-  return (
-    <div className="flex items-center gap-3 border-b border-hair bg-background/60 px-4 py-3">
-      <span className="flex gap-1.5">
-        <i className="h-2.5 w-2.5 rounded-full bg-hair" />
-        <i className="h-2.5 w-2.5 rounded-full bg-hair" />
-        <i className="h-2.5 w-2.5 rounded-full bg-hair" />
-      </span>
-      <span className="flex-1 rounded-full bg-background px-4 py-1 font-mono text-[11px] text-muted">
-        {url}
-      </span>
-    </div>
-  );
-}
-
-function DashboardMockup() {
-  const bars = [35, 55, 42, 68, 50, 82, 64, 90];
-  return (
-    <div data-visual className={frame}>
-      <BrowserBar url="app.yourbusiness.com/dashboard" />
-      <div className="flex h-[36vh] sm:h-[48vh]">
-        <div className="hidden w-14 flex-col items-center gap-4 border-r border-hair bg-background/40 py-5 sm:flex">
-          <span data-pop className="h-6 w-6 rounded-md bg-signal" />
-          {[0, 1, 2, 3].map((n) => (
-            <i key={n} data-pop className="block h-5 w-5 rounded bg-hair" />
-          ))}
-        </div>
-
-        <div className="flex-1 space-y-3 overflow-hidden p-3 sm:space-y-4 sm:p-5">
-          <div data-pop className="hidden items-center justify-between sm:flex">
-            <div className="h-4 w-32 rounded bg-foreground/80" />
-            <div className="h-7 w-7 rounded-full bg-signal/30" />
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            {[0, 1, 2].map((n) => (
-              <div
-                key={n}
-                data-pop
-                className="space-y-2 rounded-lg border border-hair bg-background/50 p-3"
-              >
-                <div className="h-2 w-1/2 rounded bg-hair" />
-                <div className="h-5 w-2/3 rounded bg-signal/80" />
-              </div>
-            ))}
-          </div>
-
-          <div data-pop className="rounded-xl border border-hair bg-background/50 p-4">
-            <div className="flex h-20 items-end gap-2 sm:h-28">
-              {bars.map((h, n) => (
-                <div
-                  key={n}
-                  data-bar
-                  style={{ height: `${h}%` }}
-                  className="flex-1 rounded-t bg-signal/70"
-                />
-              ))}
-            </div>
-          </div>
-
-          {[0, 1].map((n) => (
-            <div key={n} data-pop className="hidden items-center gap-3 sm:flex">
-              <div className="h-6 w-6 rounded-full bg-hair" />
-              <div className="h-2.5 flex-1 rounded bg-hair" />
-              <div className="h-5 w-14 rounded-full bg-signal/20" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SystemMockup() {
-  const steps = [
-    "Customer places an order",
-    "Stock is checked automatically",
-    "Invoice is sent out",
-    "Report is ready for you",
-  ];
-  return (
-    <div data-visual className={frame}>
-      <div className="flex items-center justify-between border-b border-hair bg-background/60 px-4 py-3">
-        <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
-          Your system
-        </span>
-        <span className="flex items-center gap-2 font-mono text-[11px] text-signal">
-          <i className="block h-2 w-2 rounded-full bg-signal" />
-          running
-        </span>
-      </div>
-
-      <div className="flex h-[36vh] flex-col justify-center p-3 sm:h-[48vh] sm:p-6">
-        {steps.map((label, n) => (
-          <div key={label}>
-            <div
-              data-pop
-              className="flex items-center gap-3 rounded-xl border border-hair bg-background/50 p-2.5 sm:gap-4 sm:p-3.5"
-            >
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg sm:h-8 sm:w-8 bg-signal/15 font-mono text-xs text-signal">
-                0{n + 1}
-              </span>
-              <span className="flex-1 text-xs font-medium sm:text-sm">{label}</span>
-              <span
-                data-pop
-                className="flex h-5 w-5 items-center justify-center rounded-full bg-signal text-background"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-3 w-3"
-                  aria-hidden="true"
-                >
-                  <path d="m5 12 5 5 9-10" />
-                </svg>
-              </span>
-            </div>
-            {n < steps.length - 1 && (
-              <div data-line className="ml-[1.4rem] h-2 w-px bg-signal/50 sm:ml-[2.1rem] sm:h-4" />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Visual({ slug }) {
-  if (slug === "web-apps") return <DashboardMockup />;
-  if (slug === "custom-software") return <SystemMockup />;
-  return <WebsiteMockup />;
-}
 export default function ServicesCinematic() {
   const rootRef = useRef(null);
+  const progressRef = useRef(0); // 0 to 1, the scroll timeline, read by the 3D stage
+  const [mount3D, setMount3D] = useState(false);
+  const [active, setActive] = useState(true); // false while the section is far off screen
+  const [mode, setMode] = useState("pending"); // "3d" or "static", decided in the browser
+
+  // 3D only where it can run well. Everywhere else we show the static image.
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setMode(pickMode());
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // start loading the 3D stage a little before the section arrives,
+  // and stop drawing it while the section is far off screen
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setMount3D(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setActive(entry.isIntersecting);
+        if (entry.isIntersecting) setMount3D(true);
+      },
+      { rootMargin: "800px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -245,6 +115,9 @@ export default function ServicesCinematic() {
 
       const tl = gsap.timeline({
         defaults: { ease: "power2.out" },
+        onUpdate: () => {
+          progressRef.current = tl.progress();
+        },
         scrollTrigger: {
           trigger: rootRef.current,
           start: "top top",
@@ -254,14 +127,6 @@ export default function ServicesCinematic() {
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
-      });
-
-      // background glows drift at different speeds while we scroll (parallax)
-      gsap.utils.toArray("[data-parallax]", rootRef.current).forEach((el) => {
-        tl.to(el, { yPercent: +el.dataset.parallax, ease: "none", duration: scenes.length }, 0);
-        if (el.dataset.rotate) {
-          tl.to(el, { rotation: +el.dataset.rotate, ease: "none", duration: scenes.length }, 0);
-        }
       });
 
       scenes.forEach((scene, i) => {
@@ -380,6 +245,10 @@ export default function ServicesCinematic() {
             .set(scene, { autoAlpha: 0 }, i + 1);
         }
       });
+
+      // make the timeline exactly scenes.length long, so progress 0 to 1 matches
+      // the 3D stage (which counts in whole scenes)
+      tl.set({}, {}, scenes.length);
     }, rootRef);
 
     // desktop only: the whole scene tilts a little toward the cursor
@@ -424,9 +293,24 @@ export default function ServicesCinematic() {
   return (
     <section
       ref={rootRef}
-      className="relative h-screen w-full overflow-hidden motion-reduce:h-auto motion-reduce:overflow-visible border-t border-hair bg-background text-foreground"
+      className="stage relative h-screen w-full overflow-hidden motion-reduce:h-auto motion-reduce:overflow-visible border-t border-hair bg-background text-foreground"
     >
-      <ServicesBackground />
+      {/* light theme only: a bright studio glow BEHIND the 3D scene */}
+      <div aria-hidden="true" className="stage-spot-light pointer-events-none absolute inset-0" />
+
+      {/* 3D stage (devices, lights). Sits behind the text. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        {mode === "3d" && mount3D && (
+          <StageBoundary onError={() => setMode("static")}>
+            <ServicesStage3D progress={progressRef} active={active} onFail={() => setMode("static")} />
+          </StageBoundary>
+        )}
+      </div>
+
+      {/* dark: one soft studio spotlight + vignette over the scene. light: only a faint edge shade. */}
+      <div aria-hidden="true" className="stage-spot-dark pointer-events-none absolute inset-0" />
+      <div aria-hidden="true" className="stage-vignette-light pointer-events-none absolute inset-0" />
+
 
       {services.map((service, i) => (
         <div
@@ -463,19 +347,19 @@ export default function ServicesCinematic() {
             </div>
 
             <div data-tilt className="relative isolate">
-              <div
-                aria-hidden="true"
-                className="absolute inset-[6%] -z-10 rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--signal)_22%,transparent),transparent)]"
-              />
-              <Visual slug={service.slug} />
+              <Visual index={i} mode={mode} />
             </div>
           </div>
         </div>
       ))}
-      <ServicesForeground />
     </section>
   );
 }
+
+
+
+
+
 
 
 

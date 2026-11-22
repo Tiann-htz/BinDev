@@ -13,7 +13,6 @@
   --signal-ink: #0B0F14;
   --muted: #9BA6B5;
   --danger: #FF6B6B;
-  --glow: #3B82F6;
   color-scheme: dark;
 }
 
@@ -28,7 +27,6 @@
   --signal-ink: #FFFFFF;
   --muted: #4B5666;
   --danger: #C62828;
-  --glow: #2563EB;
   color-scheme: light;
 }
 
@@ -272,22 +270,30 @@ html {
   opacity: 0.9;
 }
 
-/* Services section background (components/sections/home/ServicesBackground.js) */
-.svc-grain {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  opacity: 0.07;
-  mix-blend-mode: overlay;
+/* The Services "stage" follows the site theme now (dark studio in dark mode,
+   bright studio in light mode). It used to force the dark tokens in both themes. */
+
+
+/* Services stage lighting. Dark: one soft spotlight and a dark vignette drawn
+   over the 3D scene. Light: a bright studio glow drawn BEHIND the scene (so it
+   never washes out the devices) and only a faint edge shade on top. */
+.stage-spot-dark {
+  background:
+    radial-gradient(50% 60% at 70% 42%, color-mix(in srgb, var(--foreground) 9%, transparent), transparent 70%),
+    radial-gradient(100% 100% at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.45));
 }
-@keyframes svc-drift {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(4%, -3%, 0) scale(1.08); }
+.stage-spot-light {
+  display: none;
+  background: radial-gradient(55% 65% at 68% 45%, #ffffff, transparent 72%);
 }
-.svc-drift {
-  animation: svc-drift 16s ease-in-out infinite alternate;
-  will-change: transform;
+.stage-vignette-light {
+  display: none;
+  background: radial-gradient(100% 100% at 50% 50%, transparent 65%, rgba(11, 15, 20, 0.07));
 }
-@media (prefers-reduced-motion: reduce) {
-  .svc-drift {
-    animation: none;
-  }
+:root[data-theme="light"] .stage-spot-dark {
+  display: none;
+}
+:root[data-theme="light"] .stage-spot-light,
+:root[data-theme="light"] .stage-vignette-light {
+  display: block;
 }
