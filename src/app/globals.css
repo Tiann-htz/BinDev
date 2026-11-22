@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 /* Theme colors. Dark is the default. The light theme is switched on by
    <html data-theme="light"> (see components/ui/ThemeToggle.js). Components only
@@ -13,6 +13,7 @@
   --signal-ink: #0B0F14;
   --muted: #9BA6B5;
   --danger: #FF6B6B;
+  --glow: #3B82F6;
   color-scheme: dark;
 }
 
@@ -27,6 +28,7 @@
   --signal-ink: #FFFFFF;
   --muted: #4B5666;
   --danger: #C62828;
+  --glow: #2563EB;
   color-scheme: light;
 }
 
@@ -268,4 +270,24 @@ html {
     radial-gradient(1px 1px at 1px 1px, color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 0);
   background-size: auto, auto, 32px 32px;
   opacity: 0.9;
+}
+
+/* Services section background (components/sections/home/ServicesBackground.js) */
+.svc-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+}
+@keyframes svc-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(4%, -3%, 0) scale(1.08); }
+}
+.svc-drift {
+  animation: svc-drift 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .svc-drift {
+    animation: none;
+  }
 }
