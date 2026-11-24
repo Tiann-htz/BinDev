@@ -20,14 +20,14 @@ export default function BookingEmbed() {
               and we will arrange a time.
             </>
           ) : (
-            "Send us a message through the form and we will arrange a time."
+            "Send us a message through the chat and we will arrange a time."
           )}
         </p>
         <a
           href="#inquiry-form"
           className="mt-6 inline-block text-sm font-medium text-signal hover:underline"
         >
-          Use the inquiry form
+          Start the chat
         </a>
       </div>
     );

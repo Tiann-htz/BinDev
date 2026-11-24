@@ -4,7 +4,7 @@ export const metadata = {
     "Tell us about your project. BinDev builds websites, web apps, and custom software for small businesses.",
 };
 
-import InquiryForm from "@/components/sections/contact/InquiryForm";
+import InquiryChat from "@/components/sections/contact/InquiryChat";
 import BookingEmbed from "@/components/sections/contact/BookingEmbed";
 import Container from "@/components/ui/Container";
 
@@ -29,7 +29,7 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="lg:col-span-7">
-            <InquiryForm />
+            <InquiryChat />
           </div>
         </div>
       </Container>
