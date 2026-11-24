@@ -15,7 +15,7 @@ import {
 
 const bubble = "max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm leading-relaxed";
 const chipClass =
-  "rounded-full border border-hair bg-background px-4 py-2 text-sm transition hover:border-signal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal";
+  "chat-in rounded-full border border-hair bg-background px-4 py-2 text-sm transition duration-200 hover:-translate-y-0.5 hover:border-signal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
 const firstMessages = () => [{ role: "assistant", ...scriptedPrompt("name", emptyFields()) }];
 
@@ -35,7 +35,9 @@ export default function InquiryChat() {
 
   useEffect(() => {
     const el = logRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
   }, [messages, status]);
 
   useEffect(() => {
@@ -59,6 +61,17 @@ export default function InquiryChat() {
     say(note || `What should the new ${FIELD_LABELS[field].toLowerCase()} be?`, prompt.chips);
   }
 
+  function continueFrom(updated) {
+    const next = nextField(updated);
+    if (next) {
+      const prompt = scriptedPrompt(next, updated);
+      say(prompt.text, prompt.chips);
+    } else {
+      say(READY_TEXT);
+      setStatus("summary");
+    }
+  }
+
   function answerScripted(text) {
     const field = nextField(fields);
     if (!field) return;
@@ -72,14 +85,7 @@ export default function InquiryChat() {
     }
     const updated = { ...fields, [field]: result.value };
     setFields(updated);
-    const next = nextField(updated);
-    if (next) {
-      const prompt = scriptedPrompt(next, updated);
-      say(prompt.text, prompt.chips);
-    } else {
-      say(READY_TEXT);
-      setStatus("summary");
-    }
+    continueFrom(updated);
   }
 
   async function send(raw) {
@@ -95,10 +101,10 @@ export default function InquiryChat() {
         say(result.error, scriptedPrompt(editing, fields).chips);
         return;
       }
-      setFields({ ...fields, [editing]: result.value });
+      const updated = { ...fields, [editing]: result.value };
+      setFields(updated);
       setEditing(null);
-      say(READY_TEXT);
-      setStatus("summary");
+      continueFrom(updated);
       return;
     }
 
@@ -181,7 +187,7 @@ export default function InquiryChat() {
   if (status === "success") {
     return (
       <div id="inquiry-form" className="text-foreground">
-        <div className="max-w-xl rounded-2xl border border-signal/30 bg-surface p-8">
+        <div className="chat-in max-w-xl rounded-2xl border border-signal/30 bg-surface p-8">
           <h2 className="text-2xl font-bold tracking-tight">Thanks, we got your message.</h2>
           <p className="mt-3 text-muted">
             We will reply within one business day with a few questions or a time to talk.
@@ -200,6 +206,17 @@ export default function InquiryChat() {
 
   const showChips = status === "idle" || status === "editPick";
   const busy = status !== "idle";
+  const inReview = status === "summary" || status === "submitting";
+  const answered = FIELD_ORDER.filter((f) => fields[f]).length;
+  const current = editing || (inReview ? null : nextField(fields));
+  const canJump = status === "idle" || status === "summary" || status === "editPick";
+  const stepLabel = inReview
+    ? "Review your answers"
+    : editing
+      ? `Editing · ${FIELD_LABELS[editing]}`
+      : current
+        ? `Step ${answered + 1} of ${FIELD_ORDER.length} · ${FIELD_LABELS[current]}`
+        : "";
 
   return (
     <div id="inquiry-form" className="text-foreground">
@@ -211,6 +228,60 @@ export default function InquiryChat() {
       </div>
 
       <div className="mt-10 max-w-2xl overflow-hidden rounded-2xl border border-hair bg-surface">
+        <nav aria-label="Inquiry progress" className="border-b border-hair px-5 pb-1.5 pt-4">
+          <div className="flex items-center justify-between gap-3 font-mono text-[10.5px] uppercase tracking-[0.18em] text-muted">
+            <span className="truncate">{stepLabel}</span>
+            <span className="shrink-0">
+              {answered} of {FIELD_ORDER.length} answered
+            </span>
+          </div>
+          <ol className="mt-2 flex gap-1.5">
+            {FIELD_ORDER.map((f) => {
+              const done = Boolean(fields[f]);
+              const isCurrent = current === f;
+              return (
+                <li key={f} className="min-w-0 flex-1">
+                  <button
+                    type="button"
+                    disabled={!done || !canJump}
+                    onClick={() => startEdit(f)}
+                    aria-current={isCurrent ? "step" : undefined}
+                    aria-label={
+                      done
+                        ? `${FIELD_LABELS[f]}: ${fields[f]}. Edit`
+                        : `${FIELD_LABELS[f]}, not answered yet`
+                    }
+                    title={done ? `${FIELD_LABELS[f]}: ${fields[f]}` : FIELD_LABELS[f]}
+                    className="group flex w-full flex-col gap-1.5 rounded py-1.5 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal disabled:cursor-default"
+                  >
+                    <span className="relative block h-1.5 w-full overflow-hidden rounded-full bg-hair">
+                      <span
+                        className={`absolute inset-0 origin-left rounded-full bg-signal transition-transform duration-500 ease-out motion-reduce:transition-none ${
+                          done ? "scale-x-100" : "scale-x-0"
+                        }`}
+                      />
+                      {isCurrent && (
+                        <span className="chat-glow absolute inset-0 rounded-full bg-signal/50" />
+                      )}
+                    </span>
+                    <span
+                      className={`hidden truncate text-[11px] transition-colors duration-300 sm:block ${
+                        isCurrent
+                          ? "text-signal"
+                          : done
+                            ? "text-foreground group-enabled:group-hover:text-signal"
+                            : "text-muted"
+                      }`}
+                    >
+                      {FIELD_LABELS[f]}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+
         <div
           ref={logRef}
           role="log"
@@ -219,7 +290,14 @@ export default function InquiryChat() {
           className="flex max-h-[28rem] min-h-[20rem] flex-col gap-3 overflow-y-auto p-5"
         >
           {messages.map((m, i) => (
-            <div key={i} className={m.role === "user" ? "flex flex-col items-end" : "flex flex-col items-start gap-3"}>
+            <div
+              key={i}
+              className={
+                m.role === "user"
+                  ? "chat-in chat-in-user flex flex-col items-end"
+                  : "chat-in flex flex-col items-start gap-3"
+              }
+            >
               <p
                 className={`${bubble} ${
                   m.role === "user"
@@ -231,8 +309,15 @@ export default function InquiryChat() {
               </p>
               {m.chips && i === messages.length - 1 && showChips && (
                 <div className="flex flex-wrap gap-2">
-                  {m.chips.map((chip) => (
-                    <button key={chip} type="button" data-chip onClick={() => onChip(chip)} className={chipClass}>
+                  {m.chips.map((chip, idx) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      data-chip
+                      onClick={() => onChip(chip)}
+                      className={chipClass}
+                      style={{ "--chat-delay": `${150 + idx * 55}ms` }}
+                    >
                       {chip}
                     </button>
                   ))}
@@ -244,18 +329,26 @@ export default function InquiryChat() {
           {status === "thinking" && (
             <p
               role="status"
-              className="self-start rounded-2xl rounded-bl-md border border-hair bg-background px-4 py-2.5 text-sm text-muted motion-safe:animate-pulse"
+              className="chat-in self-start rounded-2xl rounded-bl-md border border-hair bg-background px-4 py-3"
             >
               <span className="sr-only">Assistant is typing</span>
-              <span aria-hidden="true">...</span>
+              <span aria-hidden="true" className="flex gap-1">
+                <span className="chat-dot size-1.5 rounded-full bg-muted" />
+                <span className="chat-dot size-1.5 rounded-full bg-muted" />
+                <span className="chat-dot size-1.5 rounded-full bg-muted" />
+              </span>
             </p>
           )}
 
-          {(status === "summary" || status === "submitting") && (
-            <div className="rounded-2xl border border-signal/30 bg-background p-4">
+          {inReview && (
+            <div className="chat-in rounded-2xl border border-signal/30 bg-background p-4">
               <dl className="space-y-2 text-sm">
-                {FIELD_ORDER.map((f) => (
-                  <div key={f} className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3">
+                {FIELD_ORDER.map((f, idx) => (
+                  <div
+                    key={f}
+                    className="chat-in grid grid-cols-[7rem_minmax(0,1fr)] gap-3"
+                    style={{ "--chat-delay": `${120 + idx * 60}ms` }}
+                  >
                     <dt className="text-muted">{FIELD_LABELS[f]}</dt>
                     <dd className="[overflow-wrap:anywhere]">{fields[f]}</dd>
                   </div>
@@ -267,7 +360,7 @@ export default function InquiryChat() {
                   data-confirm
                   onClick={submit}
                   disabled={status === "submitting"}
-                  className="rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-signal-ink transition active:scale-[0.98] disabled:opacity-60"
+                  className="rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-signal-ink transition duration-200 hover:brightness-105 active:scale-[0.98] disabled:opacity-60 motion-reduce:transition-none"
                 >
                   {status === "submitting" ? "Sending..." : "Looks good ✓"}
                 </button>
@@ -275,7 +368,7 @@ export default function InquiryChat() {
                   type="button"
                   onClick={pickEdit}
                   disabled={status === "submitting"}
-                  className="rounded-full border border-hair px-5 py-2.5 text-sm font-medium transition hover:border-signal disabled:opacity-60"
+                  className="rounded-full border border-hair px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-signal disabled:opacity-60 motion-reduce:transition-none"
                 >
                   Make an edit
                 </button>
@@ -309,12 +402,12 @@ export default function InquiryChat() {
               }
             }}
             placeholder={busy ? "" : "Type your answer"}
-            className="min-h-12 w-full resize-none rounded-xl border border-hair bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal disabled:opacity-60"
+            className="min-h-12 w-full resize-none rounded-xl border border-hair bg-background px-4 py-3 text-sm text-foreground transition-opacity duration-200 placeholder:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal disabled:opacity-60 motion-reduce:transition-none"
           />
           <button
             type="submit"
             disabled={busy || !input.trim()}
-            className="rounded-full bg-signal px-5 py-3 text-sm font-semibold text-signal-ink transition active:scale-[0.98] disabled:opacity-50"
+            className="rounded-full bg-signal px-5 py-3 text-sm font-semibold text-signal-ink transition duration-200 active:scale-[0.98] disabled:opacity-50 motion-reduce:transition-none"
           >
             Send
           </button>

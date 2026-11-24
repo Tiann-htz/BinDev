@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 /* Theme colors. Dark is the default. The light theme is switched on by
    <html data-theme="light"> (see components/ui/ThemeToggle.js). Components only
@@ -296,4 +296,52 @@ html {
 :root[data-theme="light"] .stage-spot-light,
 :root[data-theme="light"] .stage-vignette-light {
   display: block;
+}
+
+/* Inquiry chat */
+@keyframes chat-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes chat-in-user {
+  from { opacity: 0; transform: translateX(14px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes chat-dot {
+  0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+
+@keyframes chat-glow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+.chat-in {
+  animation: chat-in 380ms cubic-bezier(0.22, 1, 0.36, 1) var(--chat-delay, 0ms) backwards;
+}
+
+.chat-in-user {
+  animation-name: chat-in-user;
+}
+
+.chat-dot {
+  animation: chat-dot 1.2s ease-in-out infinite;
+}
+
+.chat-dot:nth-child(2) { animation-delay: 0.15s; }
+.chat-dot:nth-child(3) { animation-delay: 0.3s; }
+
+.chat-glow {
+  animation: chat-glow 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-in,
+  .chat-dot,
+  .chat-glow {
+    animation: none;
+  }
 }
