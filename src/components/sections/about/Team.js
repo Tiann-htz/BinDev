@@ -34,16 +34,32 @@ function Photo({ member, sizes }) {
   );
 }
 
-function FeaturedCard({ member }) {
+function FeaturedCard({ member, stacked = false }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-hair bg-surface sm:flex-row">
-      <div className="relative aspect-[4/5] w-full bg-background sm:w-[45%] sm:shrink-0">
+    <div
+      className={`flex h-full flex-col overflow-hidden rounded-2xl border border-hair bg-surface sm:flex-row ${
+        stacked ? "lg:flex-col" : ""
+      }`}
+    >
+      <div
+        className={`relative aspect-[4/5] w-full bg-background sm:w-[45%] sm:shrink-0 ${
+          stacked ? "lg:aspect-square lg:w-full" : ""
+        }`}
+      >
         <Photo
           member={member}
-          sizes="(min-width: 1024px) 270px, (min-width: 640px) 220px, 100vw"
+          sizes={
+            stacked
+              ? "(min-width: 1024px) 400px, (min-width: 640px) 220px, 100vw"
+              : "(min-width: 1024px) 270px, (min-width: 640px) 220px, 100vw"
+          }
         />
       </div>
-      <div className="flex flex-1 flex-col justify-center p-6 lg:p-8">
+      <div
+        className={`flex min-w-0 flex-1 flex-col justify-center p-6 ${
+          stacked ? "" : "lg:p-8"
+        }`}
+      >
         <h3 className="text-2xl font-semibold tracking-tight">{member.name}</h3>
         <p className="mt-2 font-mono text-xs uppercase tracking-wide text-signal">
           {member.role}
@@ -81,12 +97,14 @@ export default function Team() {
   const published = team.filter((member) => member.published);
   const featured = published.filter((member) => member.featured);
   const others = published.filter((member) => !member.featured);
+  const threeUp = featured.length === 3;
 
   if (published.length === 0) return null;
 
   return (
     <section className="border-t border-hair bg-background py-16 text-foreground">
       <Container>
+        <div className="mx-auto max-w-[1080px]">
         <Reveal>
           <h2 className="text-2xl font-bold tracking-tight">
             The people behind BinDev
@@ -94,10 +112,22 @@ export default function Team() {
         </Reveal>
 
         {featured.length > 0 && (
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
+          <div
+            className={`mt-8 grid gap-6 md:grid-cols-2 ${
+              threeUp ? "lg:grid-cols-3" : ""
+            }`}
+          >
             {featured.map((member, index) => (
-              <Reveal key={member.name} delay={index * 80}>
-                <FeaturedCard member={member} />
+              <Reveal
+                key={member.name}
+                delay={index * 80}
+                className={
+                  threeUp && index === 2
+                    ? "md:col-span-2 md:mx-auto md:w-[calc(50%-0.75rem)] lg:col-span-1 lg:mx-0 lg:w-auto"
+                    : ""
+                }
+              >
+                <FeaturedCard member={member} stacked={threeUp} />
               </Reveal>
             ))}
           </div>
@@ -112,6 +142,7 @@ export default function Team() {
             ))}
           </div>
         )}
+        </div>
       </Container>
     </section>
   );
